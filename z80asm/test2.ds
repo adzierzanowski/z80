@@ -1,0 +1,11 @@
+; z80dasm 1.1.6
+; command line: z80dasm test2.bin
+
+	org	00100h
+
+	djnz $-3
+	djnz $+0
+	djnz $-3
+	djnz $-6
+	djnz $-9
+	djnz $-13
