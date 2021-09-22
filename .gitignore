@@ -1,2 +1,5 @@
-./docs
-./test
+/docs/
+/test
+
+__pycache__
+Makefile
