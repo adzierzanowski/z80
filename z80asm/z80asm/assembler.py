@@ -1,209 +1,233 @@
-from re import match
-from .interface import error
+from .interface import bytearr_fmt, error, printv, warning
 from .symbols import MNEMONICS
-from . import tokenizer
+from .tokenizer import Token, tokenize
 from math import log2, floor
 import sys
 from . import ansi as a
 
-import logging
 
-logger = logging.getLogger()
+class FirstPassState:
+  def __init__(self):
+    self.mtoken = None # first token of the current mnemonic
+    self.mfound = False
+    self.mnems = None # current matching mnemonics
+    self.mnem = None
+    self.mpos = 0
+    self.cpos = 0
+    self.last_line = 0
+    self.dtoken = None # directive token
 
-def first_pass(tokens):
-  for tok in tokens:
-    print(tok)
+  def get_predicate(self, tok):
+    if tok.type == Token.NUMBER:
+      predicate = lambda m: m.schema[self.mpos] in ('imm8', 'imm16')
+    elif tok.type in (Token.LABEL_REF, Token.HERE):
+      predicate = lambda m: m.schema[self.mpos] == 'imm16'
+    elif tok.type == Token.OPENING_PAREN:
+      predicate = lambda m: m.schema[self.mpos] in '(['
+    elif tok.type == Token.CLOSING_PAREN:
+      predicate = lambda m: m.schema[self.mpos] in ')]'
+    else:
+      predicate = lambda m: len(m.schema) > self.mpos and m.schema[self.mpos] == tok.value
+    return predicate, ('Generic error',)
 
-  print('FIRST PASS')
+  def find_mnemonic(self, tok):
+    if tok.type == Token.MNEMONIC:
+      self.mtoken = tok
+    haystack = self.mnems
+    if self.mpos == 0:
+      haystack = MNEMONICS
+      predicate = lambda m: m.schema[0] == tok.value
+    else:
+      predicate, _ = self.get_predicate(tok)
+
+    self.mnems = [m for m in haystack if predicate(m)]
+
+    if len(self.mnems) == 1:
+      self.mnem = self.mnems[0]
+      self.mtoken.position = self.cpos
+      self.mtoken.mnemonic = self.mnem
+      self.cpos += self.mnem.size
+      self.mfound = True
+      self.mpos += 1
+    elif len(self.mnems) == 0:
+      error(f'Unexpected token for {self.mtoken}: {tok}')
+    else:
+      self.mfound = False
+      self.mpos += 1
+
+  def match_mnemonic(self, tok):
+    if not self.mfound:
+      self.find_mnemonic(tok)
+      return True
+    elif self.mtoken:
+      predicate, err = self.get_predicate(tok)
+      if predicate(self.mnem):
+        self.mpos += 1
+      else:
+        error(*err)
+      return True
+    return False
+
+def first_pass(tokens, verbose=False):
+  printv(verbose, 'FIRST PASS')
 
   labels = {}
+  fps = FirstPassState()
 
-  mtoken = None # first token of the current mnemonic
-  mfound = False
-  mnems = None # current matching mnemonics
-  mnem = None
-  mpos = 0
-  cpos = 0
-
-  for i, token in enumerate(tokens):
-    if mtoken and mfound:
-      if len(mnem.mnemonic) <= mpos:
-        mtoken = None
-        mpos = 0
-
-    print(i, token, f'{a.GREEN if mfound else a.RED}mfound{a.E}'
-    f' {a.GREEN if mtoken else a.RED}mtoken{a.E}')
-
-    if token.type == 'label':
-      token.position = cpos
-      labels[token.value] = cpos
-    elif token.type == 'mnemonic':
-      mnems = [m for m in MNEMONICS if m.mnemonic[0] == token.value]
-      mtoken = token
-      if len(mnems) == 1:
-        mnem = mnems[0]
-        mtoken.position = cpos
-        mtoken.mnemonic = mnem
-        mtoken.signed = mnem.signed
-        cpos += mnem.size
-        mfound = True
-        mpos += 1
-      elif len(mnems) == 0:
-        error(f'Expected different token for {mtoken}')
-      else:
-        mfound = False
-        mpos = 1
-    elif token.type == 'register':
-      if not mfound:
-        mnems = [m for m in mnems if m.mnemonic[mpos] == token.value]
-        if len(mnems) == 1:
-          mnem = mnems[0]
-          mtoken.position = cpos
-          mtoken.mnemonic = mnem
-          mtoken.signed = mnem.signed
-          cpos += mnem.size
-          mfound = True
-          mpos += 1
-        elif len(mnems) == 0:
-          error(f'Unexpected token after {token}: `{token}`')
+  for token in tokens:
+    if fps.last_line != token.src_line:
+      fps.dtoken = None
+      if fps.mtoken and not fps.mfound:
+        fps.mnems_ = [m for m in fps.mnems if len(m.schema) == fps.mpos]
+        if len(fps.mnems_) == 1:
+          fps.mtoken.mnemonic = fps.mnems_[0]
+        elif len(fps.mnems) == 0:
+          error('Mnemonic not found for token:', fps.mtoken)
         else:
-          mpos += 1
-      elif mtoken:
-        if mnem.mnemonic[mpos] == token.value:
-          mpos += 1
-        else:
-          error(f'Unexpected register for {mtoken}: {token}')
-      else:
-        error(f'Unexpected register without an instruction: {token}')
+          error('Mnemonic is ambiguous:', fps.mtoken, quit=False)
+          for fps.mnem in fps.mnems:
+            print(fps.mnem.pretty_schema, file=sys.stderr)
+          sys.exit(1)
+    fps.last_line = token.src_line
 
-    elif token.type == 'number':
-      if not mfound:
-        mnems = [m for m in mnems if m.mnemonic[mpos] in ('imm8', 'imm16')]
-        if len(mnems) == 1:
-          mnem = mnems[0]
-          mtoken.position = cpos
-          mtoken.mnemonic = mnem
-          mtoken.signed = mnem.signed
-          cpos += mnem.size
-          mfound = True
-          mpos += 1
-        elif len(mnems) == 0:
-          error(f'Unexpected token after {token}: `{token}`')
-        else:
-          mpos += 1
-      elif mtoken:
-        if mnem.mnemonic[mpos] == 'imm8':
+    if fps.mtoken and fps.mfound:
+      if len(fps.mnem.schema) <= fps.mpos:
+        fps.mtoken = None
+        fps.mpos = 0
+
+    printv(verbose, token)
+
+    if token.type == Token.LABEL:
+      token.position = fps.cpos
+      labels[token.value] = fps.cpos
+
+    elif token.type == Token.DIRECTIVE:
+      fps.dtoken = token
+
+    elif token.type == Token.MNEMONIC:
+      fps.find_mnemonic(token)
+
+    elif token.type == Token.REGISTER:
+      if not fps.match_mnemonic(token):
+        error('Unexpected register without an instruction:', token)
+
+    elif token.type == Token.FLAG:
+      if not fps.match_mnemonic(token):
+        error('Unexpected flag without an instruction:', token)
+
+    elif token.type == Token.NUMBER:
+      if not fps.mfound:
+        fps.find_mnemonic(token)
+      elif fps.mtoken:
+        if fps.mnem.mnemonic[fps.mpos] == 'imm8':
           if token.value < 0x100:
-            if mtoken.signed:
+            if fps.mtoken.signed:
               if token.value not in range(-128, 128):
-                error(f'Expected a signed value in range [-128, 127] for {mtoken}')
+                error(f'Expected a signed value in range [-128, 127] for {fps.mtoken}')
               token.signed = True
 
-            token.position = cpos
+            token.position = fps.cpos
             token.size = 1
-            mpos += 1
-            cpos += 1
+            fps.mpos += 1
+            fps.cpos += 1
           else:
-            error(f'Expected an 8-bit value for {mtoken}')
-        elif mnem.mnemonic[mpos] == 'imm16':
+            error(f'Expected an 8-bit value for {fps.mtoken}')
+        elif fps.mnem.mnemonic[fps.mpos] == 'imm16':
           if token.value < 0x10000:
-            token.position = cpos
+            token.position = fps.cpos
             token.size = 2
-            mpos += 1
-            cpos += 2
+            fps.mpos += 1
+            fps.cpos += 2
           else:
-            error(f'Expected a 16-byte value for {mtoken}')
+            error(f'Expected a 16-byte value for {fps.mtoken}')
 
-      else:
-        pass
-        #cpos += floor(floor(log2(token.value)+1)/8+1) # number of bytes needed
+      elif fps.dtoken:
+        if fps.dtoken.value == '.db':
+          token.position = fps.cpos
+          token.size = 1
+          fps.cpos += 1
+        elif fps.dtoken.value == '.dw':
+          token.position = fps.cpos
+          token.size = 2
+          fps.cpos += 2
+        elif fps.dtoken.value == '.ds':
+          if fps.dtoken.argc == 0:
+            fps.dtoken.argc = 1
+            fps.dtoken.size = token.value
+            fps.dtoken.fill = 0
+            fps.cpos += token.value
+          elif fps.dtoken.argc == 1:
+            fps.dtoken.argc = 2
+            fps.dtoken.fill = token.value
 
-    elif token.type == 'label_ref':
-      if not mfound:
-        mnems = [m for m in mnems if m.mnemonic[mpos] == 'imm16']
-        if len(mnems) == 1:
-          mnem = mnems[0]
-          mtoken.position = cpos
-          mtoken.mnemonic = mnem
-          mtoken.signed = mnem.signed
-          cpos += mnem.size
-          mfound = True
-          mpos += 1
-        elif len(mnems) == 0:
-          error(f'Unexpected token after {token}: `{token}`')
-        else:
-          mpos += 1
-      elif mtoken:
-        if mnem.mnemonic[mpos] == 'imm16':
-          mpos += 1
+    elif token.type == Token.HERE:
+      if not fps.match_mnemonic(token):
+        error(f'Unexpected current position reference:', token)
       else:
+        token.position = fps.cpos
+        token.value = fps.cpos - 3 # TODO: think if it makes sense
+        token.size = 2
+
+    elif token.type == Token.LABEL_REF:
+      if not fps.match_mnemonic(token):
         error(f'Label reference without an instruction: {token.value}')
-    elif token.type == 'opening_paren':
-      if not mfound:
-        mnems = [m for m in mnems if m.mnemonic[mpos] in '([']
-        if len(mnems) == 1:
-          mnem = mnems[0]
-          mtoken.position = cpos
-          mtoken.mnemonic = mnem
-          mtoken.signed = mnem.signed
-          cpos += mnem.size
-          mfound = True
-          mpos += 1
-        elif len(mnems) == 0:
-          error(f'Unexpected token after {token}: `{token}`')
-        else:
-          mpos += 1
-    elif token.type == 'closing_paren':
-      if not mfound:
-        mnems = [m for m in mnems if m.mnemonic[mpos] in ')]']
-        if len(mnems) == 1:
-          mnem = mnems[0]
-          mtoken.position = cpos
-          mtoken.mnemonic = mnem
-          mtoken.signed = mnem.signed
-          cpos += mnem.size
-          mfound = True
-          mpos += 1
-        elif len(mnems) == 0:
-          error(f'Unexpected token after {token}: `{token}`')
-        else:
-          mpos += 1
-      elif mtoken:
-        if mnem.mnemonic[mpos] in ')]':
-          mpos += 1
-        else:
-          error(f'Unexpected closing parenthesis for {mtoken}')
-    elif token.type == 'operator':
+
+    elif token.type == Token.OPENING_PAREN:
+      if not fps.match_mnemonic(token):
+        error(f'Unexpected opening parenthesis', token)
+
+    elif token.type == Token.CLOSING_PAREN:
+      if not fps.match_mnemonic(token):
+        error(f'Unexpected closing parenthesis', token)
+
+    elif token.type == Token.OPERATOR:
       pass
 
+  printv(verbose)
   return labels
 
-def assemble(source_code):
-  print('ASSEMBLE')
-  tokens = tokenizer.tokenize(source_code)
-  labels = first_pass(tokens)
+def assemble(source_code, verbose=False):
+  tokens = tokenize(source_code, verbose=verbose)
+  labels = first_pass(tokens, verbose=verbose)
 
-  tokens = [t for t in tokens if t.type != 'label']
+  tokens = [t for t in tokens if t.type != Token.LABEL]
 
-  print('BYTECODE EMIT')
+  printv(verbose, 'BYTECODE EMIT')
 
   bytecode = []
+  mtok = None
   for tok in tokens:
-    print(tok)
-    if tok.position is not None:
-      if tok.type == 'number' and tok.size is not None:
-        val = tok.value
-        if tok.signed:
-          if val < 0:
-            val = ~((-val) - 1)
+    emit = []
+    if tok.type == Token.MNEMONIC and not tok.mnemonic:
+      error('Token type is mnemonic but no mnemonic found:', tok)
 
-        for _ in range(tok.size):
-          bytecode.append(val & 0xff)
-          val >>= 8
-      else:
-        bytecode += tok.mnemonic.opcode
-    elif tok.type == 'label_ref':
+    if tok.mnemonic:
+      mtok = tok
+      emit = tok.mnemonic.opcode
+    elif tok.type == Token.DIRECTIVE:
+      if tok.value == '.ds':
+        emit = [tok.fill for _ in range(tok.size)]
+    elif tok.type == Token.LABEL_REF:
       pos = labels[tok.value]
-      bytecode.append(pos & 0xff)
-      bytecode.append((pos >> 8) & 0xff)
+      emit = [pos & 0xff, (pos >> 8) & 0xff]
+    elif tok.type == Token.NUMBER or tok.type == Token.HERE:
+      if tok.size is not None:
+        # number of bytes needed to cover the whole number
+        real_size = 1
+        if tok.value > 0:
+          bindigits = floor(log2(tok.value)+1)
+          real_size = bindigits // 8 + 1 if bindigits % 8 else 0
+        emit = [tok.value >> (i * 8) & 0xff for i in range(tok.size)]
+        if real_size > tok.size:
+          warning('Number has been truncated:', tok, '->', bytearr_fmt(emit))
+
+      elif mtok:
+        if 'imm8' in mtok.mnemonic.schema:
+          emit = [tok.value]
+        elif 'imm16' in mtok.mnemonic.schema:
+          emit = [tok.value & 0xff, (tok.value >> 8) & 0xff]
+
+    bytecode += emit
+    printv(verbose, tok, bytearr_fmt(emit, rle=True))
+  printv(verbose)
   return bytecode

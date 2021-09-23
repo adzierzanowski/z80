@@ -16,6 +16,7 @@ def main():
   parser.add_argument('-i', '--intel8080', action='store_true', help='intel8080 mode')
   parser.add_argument('-o', '--output', type=str, help='output file')
   parser.add_argument('-s', '--strict', action='store_true', help='use mnemonics strictly of cpu type')
+  parser.add_argument('-v', '--verbose', action='store_true', help='be very verbose')
   args = parser.parse_args()
 
   logging.basicConfig(format='%(levelname)-10s L%(lineno)-6d %(message)s', level=DEBUG, stream=sys.stdout)
@@ -27,19 +28,19 @@ def main():
       data = f.read()
   except FileNotFoundError:
     error('Input file not found.', file=sys.stderr)
-    sys.exit(1)
 
 
   if args.disassemble:
-    print('Disassembler not implemented yet.', file=sys.stderr)
-    sys.exit(1)
+    error('Disassembler not implemented yet.', file=sys.stderr)
   else:
-    bytecode = assemble(data)
+    bytecode = assemble(data, verbose=args.verbose)
     if args.output:
-      print('writing to', args.output)
+      print('Writing to', args.output)
       with open(args.output, 'wb') as f:
         n = f.write(bytes(bytecode))
-        print('written', n, 'bytes')
+        print('Written', n, 'bytes')
+    else:
+      print(' '.join([f'{b:02x}' for b in bytecode]))
 
 
 if __name__ == '__main__':

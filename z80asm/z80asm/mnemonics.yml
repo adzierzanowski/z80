@@ -1,0 +1,528 @@
+z80:
+  - schema: nop
+    opcode: 0x00
+  - schema: ld bc imm16
+    opcode: 0x01
+  - schema: ld [ bc ] a
+    opcode: 0x02
+  - schema: inc bc
+    opcode: 0x03
+  - schema: inc b
+    opcode: 0x04
+  - schema: dec b
+    opcode: 0x05
+  - schema: ld b imm8
+    opcode: 0x06
+  - schema: rlca
+    opcode: 0x07
+  - schema: ex af af'
+    opcode: 0x08
+  - schema: add hl bc
+    opcode: 0x09
+  - schema: ld a [ bc ]
+    opcode: 0x0a
+  - schema: dec bc
+    opcode: 0x0b
+  - schema: inc c
+    opcode: 0x0c
+  - schema: dec c
+    opcode: 0x0d
+  - schema: ld c imm8
+    opcode: 0x0e
+  - schema: rrca
+    opcode: 0x0f
+
+  - schema: djnz imm8
+    opcode: 0x10
+  - schema: ld de imm16
+    opcode: 0x11
+  - schema: ld [ de ] a
+    opcode: 0x12
+  - schema: inc de
+    opcode: 0x13
+  - schema: inc d
+    opcode: 0x14
+  - schema: dec d
+    opcode: 0x15
+  - schema: ld d imm8
+    opcode: 0x16
+  - schema: rla
+    opcode: 0x17
+  - schema: jr imm8
+    opcode: 0x18
+  - schema: add hl de
+    opcode: 0x19
+  - schema: ld a [ de ]
+    opcode: 0x1a
+  - schema: dec de
+    opcode: 0x1b
+  - schema: inc e
+    opcode: 0x1c
+  - schema: dec e
+    opcode: 0x1d
+  - schema: ld e imm8
+    opcode: 0x1e
+  - schema: rra
+    opcode: 0x1f
+
+  - schema: jr nz imm8
+    opcode: 0x20
+  - schema: ld hl imm16
+    opcode: 0x21
+  - schema: ld [ imm16 ] hl
+    opcode: 0x22
+  - schema: inc hl
+    opcode: 0x23
+  - schema: inc h
+    opcode: 0x24
+  - schema: dec h
+    opcode: 0x25
+  - schema: ld h imm8
+    opcode: 0x26
+  - schema: daa
+    opcode: 0x27
+  - schema: jr z imm8
+    opcode: 0x28
+  - schema: add hl hl
+    opcode: 0x29
+  - schema: ld hl [ imm18 ]
+    opcode: 0x2a
+  - schema: dec hl
+    opcode: 0x2b
+  - schema: inc l
+    opcode: 0x2c
+  - schema: dec l
+    opcode: 0x2d
+  - schema: ld l imm8
+    opcode: 0x2e
+  - schema: cpl
+    opcode: 0x2f
+
+  - schema: jr nc imm8
+    opcode: 0x30
+  - schema: ld sp imm16
+    opcode: 0x31
+  - schema: ld [ imm16 ] a
+    opcode: 0x32
+  - schema: inc sp
+    opcode: 0x33
+  - schema: inc [ hl ]
+    opcode: 0x34
+  - schema: dec [ hl ]
+    opcode: 0x35
+  - schema: ld [ hl ] imm8
+    opcode: 0x36
+  - schema: scf
+    opcode: 0x37
+  - schema: jr c imm8
+    opcode: 0x38
+  - schema: add hl sp
+    opcode: 0x39
+  - schema: ld a [ imm16 ]
+    opcode: 0x3a
+  - schema: dec sp
+    opcode: 0x3b
+  - schema: inc a
+    opcode: 0x3c
+  - schema: dec a
+    opcode: 0x3d
+  - schema: ld a imm8
+    opcode: 0x3e
+  - schema: ccf
+    opcode: 0x3f
+
+  - schema: ld b b
+    opcode: 0x40
+  - schema: ld b c
+    opcode: 0x41
+  - schema: ld b d
+    opcode: 0x42
+  - schema: ld b e
+    opcode: 0x43
+  - schema: ld b h
+    opcode: 0x44
+  - schema: ld b l
+    opcode: 0x45
+  - schema: ld b [ hl ]
+    opcode: 0x46
+  - schema: ld b a
+    opcode: 0x47
+  - schema: ld c b
+    opcode: 0x48
+  - schema: ld c c
+    opcode: 0x49
+  - schema: ld c d
+    opcode: 0x4a
+  - schema: ld c e
+    opcode: 0x4b
+  - schema: ld c h
+    opcode: 0x4c
+  - schema: ld c l
+    opcode: 0x4d
+  - schema: ld c [ hl ]
+    opcode: 0x4e
+  - schema: ld c a
+    opcode: 0x4f
+
+  - schema: ld d b
+    opcode: 0x50
+  - schema: ld d c
+    opcode: 0x51
+  - schema: ld d d
+    opcode: 0x52
+  - schema: ld d e
+    opcode: 0x53
+  - schema: ld d h
+    opcode: 0x54
+  - schema: ld d l
+    opcode: 0x55
+  - schema: ld d [ hl ]
+    opcode: 0x56
+  - schema: ld d a
+    opcode: 0x57
+  - schema: ld e b
+    opcode: 0x58
+  - schema: ld e c
+    opcode: 0x59
+  - schema: ld e d
+    opcode: 0x5a
+  - schema: ld e e
+    opcode: 0x5b
+  - schema: ld e h
+    opcode: 0x5c
+  - schema: ld e l
+    opcode: 0x5d
+  - schema: ld e [ hl ]
+    opcode: 0x5e
+  - schema: ld e a
+    opcode: 0x5f
+
+  - schema: ld h b
+    opcode: 0x60
+  - schema: ld h c
+    opcode: 0x61
+  - schema: ld h d
+    opcode: 0x62
+  - schema: ld h e
+    opcode: 0x63
+  - schema: ld h h
+    opcode: 0x64
+  - schema: ld h l
+    opcode: 0x65
+  - schema: ld h [ hl ]
+    opcode: 0x66
+  - schema: ld h a
+    opcode: 0x67
+  - schema: ld l b
+    opcode: 0x68
+  - schema: ld l c
+    opcode: 0x69
+  - schema: ld l d
+    opcode: 0x6a
+  - schema: ld l e
+    opcode: 0x6b
+  - schema: ld l h
+    opcode: 0x6c
+  - schema: ld l l
+    opcode: 0x6d
+  - schema: ld l [ hl ]
+    opcode: 0x6e
+  - schema: ld l a
+    opcode: 0x6f
+
+  - schema: ld [ hl ] b
+    opcode: 0x70
+  - schema: ld [ hl ] c
+    opcode: 0x71
+  - schema: ld [ hl ] d
+    opcode: 0x72
+  - schema: ld [ hl ] e
+    opcode: 0x73
+  - schema: ld [ hl ] h
+    opcode: 0x74
+  - schema: ld [ hl ] l
+    opcode: 0x75
+  - schema: halt
+    opcode: 0x76
+  - schema: ld [ hl ] a
+    opcode: 0x77
+  - schema: ld a b
+    opcode: 0x78
+  - schema: ld a c
+    opcode: 0x79
+  - schema: ld a d
+    opcode: 0x7a
+  - schema: ld a e
+    opcode: 0x7b
+  - schema: ld a h
+    opcode: 0x7c
+  - schema: ld a l
+    opcode: 0x7d
+  - schema: ld a [ hl ]
+    opcode: 0x7e
+  - schema: ld a a
+    opcode: 0x7f
+
+  - schema: add a b
+    opcode: 0x80
+  - schema: add a c
+    opcode: 0x81
+  - schema: add a d
+    opcode: 0x82
+  - schema: add a e
+    opcode: 0x83
+  - schema: add a h
+    opcode: 0x84
+  - schema: add a l
+    opcode: 0x85
+  - schema: add a [ hl ]
+    opcode: 0x86
+  - schema: add a a
+    opcode: 0x87
+  - schema: adc a b
+    opcode: 0x88
+  - schema: adc a c
+    opcode: 0x89
+  - schema: adc a d
+    opcode: 0x8a
+  - schema: adc a e
+    opcode: 0x8b
+  - schema: adc a h
+    opcode: 0x8c
+  - schema: adc a l
+    opcode: 0x8d
+  - schema: adc a [ hl ]
+    opcode: 0x8e
+  - schema: adc a a
+    opcode: 0x8f
+
+  - schema: sub b
+    opcode: 0x90
+  - schema: sub c
+    opcode: 0x91
+  - schema: sub d
+    opcode: 0x92
+  - schema: sub e
+    opcode: 0x93
+  - schema: sub h
+    opcode: 0x94
+  - schema: sub l
+    opcode: 0x95
+  - schema: sub [ hl ]
+    opcode: 0x96
+  - schema: sub a
+    opcode: 0x97
+  - schema: sbc a b
+    opcode: 0x98
+  - schema: sbc a c
+    opcode: 0x99
+  - schema: sbc a d
+    opcode: 0x9a
+  - schema: sbc a e
+    opcode: 0x9b
+  - schema: sbc a h
+    opcode: 0x9c
+  - schema: sbc a l
+    opcode: 0x9d
+  - schema: sbc a [ hl ]
+    opcode: 0x9e
+  - schema: sbc a a
+    opcode: 0x9f
+
+  - schema: and b
+    opcode: 0xa0
+  - schema: and c
+    opcode: 0xa1
+  - schema: and d
+    opcode: 0xa2
+  - schema: and e
+    opcode: 0xa3
+  - schema: and h
+    opcode: 0xa4
+  - schema: and l
+    opcode: 0xa5
+  - schema: and [ hl ]
+    opcode: 0xa6
+  - schema: and a
+    opcode: 0xa7
+  - schema: xor b
+    opcode: 0xa8
+  - schema: xor c
+    opcode: 0xa9
+  - schema: xor d
+    opcode: 0xaa
+  - schema: xor e
+    opcode: 0xab
+  - schema: xor h
+    opcode: 0xac
+  - schema: xor l
+    opcode: 0xad
+  - schema: xor [ hl ]
+    opcode: 0xae
+  - schema: xor a
+    opcode: 0xaf
+
+  - schema: or b
+    opcode: 0xb0
+  - schema: or c
+    opcode: 0xb1
+  - schema: or d
+    opcode: 0xb2
+  - schema: or e
+    opcode: 0xb3
+  - schema: or h
+    opcode: 0xb4
+  - schema: or l
+    opcode: 0xb5
+  - schema: or [ hl ]
+    opcode: 0xb6
+  - schema: or a
+    opcode: 0xb7
+  - schema: cp b
+    opcode: 0xb8
+  - schema: cp c
+    opcode: 0xb9
+  - schema: cp d
+    opcode: 0xba
+  - schema: cp e
+    opcode: 0xbb
+  - schema: cp h
+    opcode: 0xbc
+  - schema: cp l
+    opcode: 0xbd
+  - schema: cp [ hl ]
+    opcode: 0xbe
+  - schema: cp a
+    opcode: 0xbf
+
+  - schema: ret nz
+    opcode: 0xc0
+  - schema: pop bc
+    opcode: 0xc1
+  - schema: jp nz imm16
+    opcode: 0xc2
+  - schema: jp imm16
+    opcode: 0xc3
+  - schema: call nz imm16
+    opcode: 0xc4
+  - schema: push bc
+    opcode: 0xc5
+  - schema: add a imm8
+    opcode: 0xc6
+  - schema: rst0
+    opcode: 0xc7
+  - schema: ret z
+    opcode: 0xc8
+  - schema: ret
+    opcode: 0xc9
+  - schema: jp z imm16
+    opcode: 0xca
+#  - schema: call z imm16
+#    opcode: 0xcb
+  - schema: call z imm16
+    opcode: 0xcc
+  - schema: call imm16
+    opcode: 0xcd
+  - schema: adc a imm8
+    opcode: 0xce
+  - schema: rst8
+    opcode: 0xcf
+
+  - schema: ret nc
+    opcode: 0xd0
+  - schema: pop de
+    opcode: 0xd1
+  - schema: jp nc imm16
+    opcode: 0xd2
+  - schema: out [ imm8 ] a
+    opcode: 0xd3
+  - schema: call nc imm16
+    opcode: 0xd4
+  - schema: push de
+    opcode: 0xd5
+  - schema: sub imm8
+    opcode: 0xd6
+  - schema: rst10
+    opcode: 0xd7
+  - schema: ret c
+    opcode: 0xd8
+  - schema: exx
+    opcode: 0xd9
+  - schema: jp c imm16
+    opcode: 0xda
+  - schema: in a [ imm8 ]
+    opcode: 0xdb
+  - schema: call c imm16
+    opcode: 0xdc
+#  - schema:
+#    opcode: 0xdd
+  - schema: sbc a imm8
+    opcode: 0xde
+  - schema: rst18
+    opcode: 0xdf
+
+  - schema: ret po
+    opcode: 0xe0
+  - schema: pop hl
+    opcode: 0xe1
+  - schema: jp po imm16
+    opcode: 0xe2
+  - schema: ex [ sp ] hl
+    opcode: 0xe3
+  - schema: call po imm16
+    opcode: 0xe4
+  - schema: push hl
+    opcode: 0xe5
+  - schema: and imm8
+    opcode: 0xe6
+  - schema: rst20
+    opcode: 0xe7
+  - schema: ret pe
+    opcode: 0xe8
+  - schema: jp [ hl ]
+    opcode: 0xe9
+  - schema: jp pe imm16
+    opcode: 0xea
+  - schema: ex de hl
+    opcode: 0xeb
+  - schema: call pe imm16
+    opcode: 0xec
+#  - schema:
+#    opcode: 0xed
+  - schema: xor imm8
+    opcode: 0xee
+  - schema: rst28
+    opcode: 0xef
+
+  - schema: ret p
+    opcode: 0xf0
+  - schema: pop af
+    opcode: 0xf1
+  - schema: jp p imm8
+    opcode: 0xf2
+  - schema: di
+    opcode: 0xf3
+  - schema: call p imm16
+    opcode: 0xf4
+  - schema: push af
+    opcode: 0xf5
+  - schema: or imm8
+    opcode: 0xf6
+  - schema: rst30
+    opcode: 0xf7
+  - schema: ret m
+    opcode: 0xf8
+  - schema: ld sp hl
+    opcode: 0xf9
+  - schema: jp m imm16
+    opcode: 0xfa
+  - schema: ei
+    opcode: 0xfb
+  - schema: call m imm16
+    opcode: 0xfc
+#  - schema:
+#    opcode: 0xfd
+  - schema: cp imm8
+    opcode: 0xfe
+  - schema: rst38
+    opcode: 0xff
