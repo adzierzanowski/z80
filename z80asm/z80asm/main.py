@@ -9,6 +9,7 @@ def main():
   argparser.add_argument('-v', '--verbose', action='store_true')
   args = argparser.parse_args()
 
+  config.filename = args.file
   if args.verbose:
     config.verbose = True
 

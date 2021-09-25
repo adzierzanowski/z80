@@ -1,3 +1,4 @@
+from re import T
 from token import NUMBER
 from .token import *
 from . import ansi as a
@@ -16,23 +17,29 @@ def emitval(val, size):
 
 def evaluate_size(tokens):
   printv(f'{a.GREEN}Evaluate size and positions{a.E}')
+  printv(f'{a.CYAN}{"#":>4} Line {"Pos":5} Token{a.E}')
 
   ptokens = []
 
   lblpos = {}
   lastsize = 0
   nextsize = 0
+  nextnextsize = 0
   directive = None
   pos = 0
   noemit = False
   for i, token in enumerate(tokens):
     size = 0
-    printv(f'{i:4}', f'@{pos:04x}', token, end=' ')
+    printv(f'{i+1:4} {token.line+1:4}', f'@{pos:04x}', token, end=' ')
 
     if isinstance(token, TOpcode):
       size = len(token.mnemonic.opcode)
+
       if 'imm8' in token.mnemonic.schema:
         nextsize = 1
+      if imm8cnt := token.mnemonic.schema.count('imm8'):
+        nextsize = 1
+        nextnextsize = imm8cnt - 1
       elif 'imm16' in token.mnemonic.schema:
         nextsize = 2
       else:
@@ -64,9 +71,10 @@ def evaluate_size(tokens):
           size = 2
       elif nextsize:
         size = nextsize
-        nextsize = 0
+        nextsize = nextnextsize
+        nextnextsize = 0
       else:
-        warning('test.s', token.line, 'Unexpected number (ignored):', token)
+        warning('test.s', token.line+1, 'Unexpected number (ignored):', token)
 
     elif isinstance(token, TExpression):
       if directive:
@@ -84,16 +92,16 @@ def evaluate_size(tokens):
         if nextsize == 1:
           val_ = val & 0xff
           if val != val_:
-            warning('test.s', token.line, 'Expression value has been trucated:', val, '->', val_)
+            warning('test.s', token.line+1, 'Expression value has been trucated:', val, '->', val_)
             token.exprvalue = val_
         elif nextsize == 2:
           val_ = val & 0xffff
           if val != val_:
-            warning('test.s', token.line, 'Expression value has been trucated:', val, '->', val_)
+            warning('test.s', token.line+1, 'Expression value has been trucated:', val, '->', val_)
             token.exprvalue = val_
         size = nextsize
       else:
-        warning('test.s', token.line, 'Unexpected expression (ignored):', token)
+        warning('test.s', token.line+1, 'Unexpected expression (ignored):', token)
 
       if token._value is not None:
         printv(f'{a.CYAN}={a.E}{token.exprvalue}', end=' ')
@@ -103,12 +111,12 @@ def evaluate_size(tokens):
         if nextsize == 1:
           val = (pos - lastsize) & 0xff
           if (pos-lastsize) != val:
-            warning('test.s', token.line, 'Curent position value has been trucated:', pos-lastsize, '->', val_)
+            warning('test.s', token.line+1, 'Curent position value has been trucated:', pos-lastsize, '->', val_)
           token.position = pos - lastsize
         elif nextsize == 2:
           val = (pos - lastsize) & 0xffff
           if (pos - lastsize) != val:
-            error('test.s', token.line, 'Curent position value is greater than 0xffff:', token)
+            error('test.s', token.line+1, 'Curent position value is greater than 0xffff:', token)
           token.position = pos - lastsize
         size = nextsize
 
@@ -128,11 +136,22 @@ def evaluate_size(tokens):
         nextsize = 0
 
     elif isinstance(token, TString):
+      tokval = token.value[1:-1]
       if directive:
         if directive.value == 'db':
-          size = len(token.value)
+          size = len(tokval)
         elif directive.value == 'dw':
-          size = len(token.value) * 2
+          size = len(tokval) * 2
+      elif nextsize:
+        val = ord(tokval[0])
+
+        if nextsize == 1:
+          if len(tokval) > 1:
+            warning('test.s', token.line+1, 'String value has been trucated to a single character:', token.value, '->', val)
+        elif nextsize == 2:
+          if len(tokval) > 2:
+            warning('test.s', token.line+1, 'String value has been trucated to first two characters:', token.value, '->', val)
+        size = nextsize
 
     lastsize = size
     token.size = size
@@ -147,11 +166,12 @@ def evaluate_size(tokens):
 
 def assemble(tokens, lblpos):
   printv(f'{a.GREEN}Assemble{a.E}')
+  printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
 
   bytecode = []
 
   for i, token in enumerate(tokens):
-    printv(f'{i:4}', token, end=' ')
+    printv(f'{i+1:4} {token.line+1:4}', token, end=' ')
 
 
     emit = []

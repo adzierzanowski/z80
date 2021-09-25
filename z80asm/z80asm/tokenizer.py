@@ -7,6 +7,7 @@ from .interface import error, printv
 
 LABEL_RX = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]+):')
 STRING_RX = re.compile(r'[\'\"].*?[\'\"]')
+INCLUDE_RX = re.compile(r'')
 
 def parsenum(word):
   try:
@@ -27,6 +28,12 @@ def strip_comments(line):
   except ValueError:
     pass
   return line
+
+
+def resolve_includes(source):
+
+
+  return source
 
 def tokenize(source):
   printv(f'{a.GREEN}Tokenize{a.E}')
@@ -61,8 +68,8 @@ def tokenize(source):
         token = TExprOpen(line=n)
       elif word == ')':
         token = TExprClose(line=n)
-      elif word in FLAGS:
-        token = TFlag(word, line=n)
+      elif word.lower() in FLAGS:
+        token = TFlag(word.lower(), line=n)
       elif word == '$':
         token = THere(line=n)
       elif word.endswith(':') and word[:-1] in lblnames:
@@ -86,7 +93,7 @@ def tokenize(source):
       elif word.startswith('@'):
         token = TString(strings[int(word[1:])], line=n)
       else:
-        error('test.s', n, 'Unexpected token:', word)
+        error('test.s', n+1, 'Unexpected token:', word)
 
       if token:
         printv(('     ' if not newline else '') + str(token))

@@ -21,7 +21,7 @@ class Token:
   SEPARATOR = 'SEP'
   STRING = 'STR'
 
-  def __init__(self, type, value, line=None):
+  def __init__(self, type, value, line=0):
     self.type = type
     self.value = value
     self.line = line
@@ -34,9 +34,12 @@ class Token:
     else:
       val = str(val)
       val = val.replace('\n', '\\n')
-      if len(val) > 20:
-        val = val[:17] + '...'
-    return f'{a.BLUE}{self.type:>4}{a.E}[{a.YELLOW}{val:^20}{a.E}]'
+      if len(val) > 24:
+        val = val[:21] + '...'
+    out = f'{a.BLUE}{self.type:>4}{a.E}[{a.YELLOW}{val:^24}{a.E}]'
+    out = out.replace('imm8', f'{a.ORANGE}imm8{a.YELLOW}')
+    out = out.replace('imm16', f'{a.ORANGE}imm16{a.YELLOW}')
+    return out
 
   def __repr__(self):
     return str(self)
@@ -85,8 +88,8 @@ class TExpression(Token):
         else:
           error('test.s', self.line, 'Can\'t evaluate label position:', tok)
       elif isinstance(tok, TOperator):
-        a = val.pop()
         b = val.pop()
+        a = val.pop()
 
         if tok.value == '|':
           val.append(a | b)
@@ -101,7 +104,7 @@ class TExpression(Token):
         elif tok.value == '+':
           val.append(a + b)
         elif tok.value == '-':
-          val.append(b - a)
+          val.append(a - b)
         elif tok.value == '*':
           val.append(a * b)
         elif tok.value == '/':
@@ -152,7 +155,7 @@ class TMemOpen(Token):
 class TMnemonic(Token):
   def __init__(self, value, line=None):
     super().__init__(Token.MNEMONIC, value, line=line)
-    self.operand = None
+    self.operands = []
 
 class TNumber(Token):
   def __init__(self, value, line=None):
@@ -166,10 +169,16 @@ class TOpcode(Token):
   @property
   def opsize(self):
     s = len(self.mnemonic.opcode)
+    s += self.mnemonic.schema.count('imm8')
+    s += self.mnemonic.schema.count('imm16')
+
+    '''
     if 'imm8' in self.mnemonic.schema:
       s += 1
     elif 'imm16' in self.mnemonic.schema:
       s += 2
+    '''
+
     return s
 
 class TOperator(Token):

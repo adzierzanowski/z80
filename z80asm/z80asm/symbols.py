@@ -78,7 +78,9 @@ Z80_MNEMONIC_NAMES = [m.schema[0] for m in MNEMONICS]
 MNEMONIC_NAMES = Z80_MNEMONIC_NAMES
 
 Z80_REGISTER_NAMES = (
-  'a', 'b', 'c', 'd', 'e', 'h', 'l', 'af', 'bc', 'de', 'hl', 'af\'', 'sp'
+  'a', 'b', 'c', 'd', 'e', 'h', 'l',
+  'af', 'bc', 'de', 'hl',
+  'af\'', 'sp', 'ix', 'iy'
 )
 
 Z80_FLAG_NAMES = (

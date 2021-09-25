@@ -1,5 +1,6 @@
 from re import match
-from sys import is_finalizing
+import sys
+from typing import Type
 from .symbols import MNEMONICS
 from .interface import error, printv
 from .token import *
@@ -7,10 +8,12 @@ from .token import *
 
 def parse_expressions(tokens):
   printv(f'{a.GREEN}Parse expressions{a.E}')
+  printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
   ptokens = []
 
   etoken = None
   omitted = []
+  ixiy = False
 
   for i, token in enumerate(tokens):
     if any([isinstance(token, T) for T in (TNumber, TLabelRef, THere)]):
@@ -20,9 +23,16 @@ def parse_expressions(tokens):
         etoken.rpn.append(token)
       omitted.append(token)
 
+    elif isinstance(token, TRegister):
+      if token.value in ('ix', 'iy'):
+        ixiy = True
+      ptokens.append(token)
+
     elif isinstance(token, TOperator):
       if etoken is None:
-        error('test.s', token.line, 'Unexpected operator:', token)
+        if not ixiy:
+          error('test.s', token.line+1, 'Unexpected operator:', token)
+        ptokens.append(token)
       else:
         omitted.append(token)
         while etoken.opstack:
@@ -52,7 +62,7 @@ def parse_expressions(tokens):
 
         omitted.append(token)
       else:
-        error('test.s', token.line, 'Unexpected closing parenthesis:', token)
+        error('test.s', token.line+1, 'Unexpected closing parenthesis:', token)
 
     elif isinstance(token, TSeparator):
       if etoken is None:
@@ -73,7 +83,7 @@ def parse_expressions(tokens):
     else:
       if etoken:
         if etoken.valid():
-          error('test.s', token.line, 'WTF', etoken)
+          error('test.s', token.line+1, 'WTF', etoken)
         else:
           ptokens += omitted
           etoken = None
@@ -82,7 +92,10 @@ def parse_expressions(tokens):
       ptokens.append(token)
 
   for i, pt in enumerate(ptokens):
-    printv(f'{i:4}', f'{pt.line:4}', pt, pt.rpnfmt if isinstance(pt, TExpression) else '')
+    try:
+      printv(f'{i+1:4}', f'{pt.line:4}', pt, pt.rpnfmt if isinstance(pt, TExpression) else '')
+    except TypeError:
+      printv(pt)
 
   return ptokens
 
@@ -94,6 +107,7 @@ def parse_opcodes(tokens):
     ]
 
   printv(f'{a.GREEN}Parse opcodes{a.E}')
+  printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
 
   ptokens = []
 
@@ -102,36 +116,44 @@ def parse_opcodes(tokens):
   spos = 0 # schema index
 
   for i, token in enumerate(tokens):
-    printv(f'{i:4}', token)
+    printv(f'{i+1:4} {token.line+1:4}', token)
 
     if isinstance(token, TMnemonic):
       if mtoken:
-        error('test.s', token.line, 'Expected a new line:', token)
+        error('test.s', token.line+1, 'Expected a new line:', token)
       else:
         mtoken = token
         matches = match(MNEMONICS, spos, lambda s: s == token.value)
 
-    if any([isinstance(token, T)
+    elif any([isinstance(token, T)
             for T in (TNumber, TLabelRef, THere, TExpression)]):
       if mtoken:
         matches = match(matches, spos, lambda s: s in ('imm8', 'imm16'))
         if matches:
-          mtoken.operand = token
+          mtoken.operands.append(token)
 
     elif any([isinstance(token, T)
               for T in (TMemOpen, TMemClose, TRegister, TFlag)]):
       if mtoken:
         matches = match(matches, spos, lambda s: s == token.value)
 
-    if isinstance(token, TSeparator):
+    elif isinstance(token, TString):
+      if mtoken:
+        matches = match(matches, spos, lambda s: s in ('imm8', 'imm16'))
+        if matches:
+          mtoken.operands.append(token)
+
+    elif isinstance(token, TSeparator):
+      ixiy = False
+
       if token.value == '\n':
         if mtoken:
           if matches:
             if len(matches) == 1:
               otoken = TOpcode(matches[0], line=mtoken.line)
               ptokens.append(otoken)
-              if mtoken.operand:
-                ptokens.append(mtoken.operand)
+              if mtoken.operands:
+                ptokens += mtoken.operands
               mtoken = None
               spos = 0
             else:
@@ -139,14 +161,18 @@ def parse_opcodes(tokens):
               if len(exact) == 1:
                 otoken = TOpcode(exact[0], line=mtoken.line)
                 ptokens.append(otoken)
-                if mtoken.operand:
-                  ptokens.append(mtoken.operand)
+                if mtoken.operands:
+                  ptokens += mtoken.operands
                 mtoken = None
                 spos = 0
               else:
-                error('test.s', mtoken.line, 'Ambiguous mnemonic:', mtoken)
+                error('test.s', mtoken.line+1, 'Ambiguous mnemonic:', mtoken, quit=False)
+                print('Did you mean one of the following?')
+                for match in matches:
+                  print('   ', match, file=sys.stderr)
+                sys.exit(1)
           else:
-            error('test.s', mtoken.line, 'No matches for mnemonic:', mtoken)
+            error('test.s', mtoken.line+1, 'No matches for mnemonic:', mtoken)
       elif token.value == ',':
         pass
 
