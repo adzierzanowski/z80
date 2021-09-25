@@ -1,17 +1,18 @@
 import sys
 from . import ansi as a
+from . import config
 
 
-def error(*msg, quit=True):
-  print(f'{a.RED}error:{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
+def error(fname, line, *msg, quit=True):
+  print(f'{a.RED}{fname}:{line}: error:{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
   if quit:
     sys.exit(1)
 
-def warning(*msg):
-  print(f'{a.YELLOW}warning:{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
+def warning(fname, line, *msg):
+  print(f'{a.YELLOW}{fname}:{line} warning:{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
 
-def printv(verbose, *args, **kwargs):
-  if verbose:
+def printv(*args, **kwargs):
+  if config.verbose:
     print(*args, **kwargs)
 
 def bytearr_fmt(ls, rle=False):

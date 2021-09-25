@@ -1,7 +1,8 @@
-import os
 from pathlib import Path
 import yaml
+from collections import namedtuple
 
+Operator = namedtuple('Operator', ('precedence', 'associativity'))
 
 class Mnemonic:
   def __init__(self, schema, opcode, signed=False):
@@ -30,7 +31,7 @@ class Mnemonic:
     return out
 
   def __str__(self):
-    return f'M[{" ".join(self.schema)}]'
+    return f'{" ".join(self.schema)}'
 
   def __repr__(self):
     return str(self)
@@ -46,14 +47,27 @@ class Opcode:
 PARENTHESES = '([)]'
 
 DIRECTIVES = (
-  '.org',
-  '.include',
-  '.db',
-  '.dw',
-  '.ds',
-  '.times',
-  '.def'
+  'org',
+  'include',
+  'db',
+  'dw',
+  'ds',
+  'times',
+  'def'
 )
+
+OPERATORS = {
+  '|': Operator(1, 'ltr'),
+  '^': Operator(2, 'ltr'),
+  '&': Operator(3, 'ltr'),
+  '<<': Operator(4, 'ltr'),
+  '>>': Operator(4, 'ltr'),
+  '+': Operator(5, 'rtl'),
+  '-': Operator(6, 'rtl'),
+  '*': Operator(7, 'ltr'),
+  '/': Operator(7, 'ltr'),
+  '%': Operator(7, 'ltr'),
+}
 
 with open(Path(__file__).parent/'mnemonics.yml', 'r') as f:
   data = yaml.full_load(f)
@@ -61,6 +75,7 @@ with open(Path(__file__).parent/'mnemonics.yml', 'r') as f:
 MNEMONICS = [Mnemonic.from_yaml(m) for m in data['z80']]
 
 Z80_MNEMONIC_NAMES = [m.schema[0] for m in MNEMONICS]
+MNEMONIC_NAMES = Z80_MNEMONIC_NAMES
 
 Z80_REGISTER_NAMES = (
   'a', 'b', 'c', 'd', 'e', 'h', 'l', 'af', 'bc', 'de', 'hl', 'af\'', 'sp'
@@ -69,6 +84,8 @@ Z80_REGISTER_NAMES = (
 Z80_FLAG_NAMES = (
   'z', 'nz', 'pe', 'po', 'm', 'c', 'nc'
 )
+
+FLAGS = Z80_FLAG_NAMES
 
 I8080_REGISTER_NAMES = (
   'a',

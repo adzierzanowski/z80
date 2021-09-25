@@ -85,7 +85,7 @@ z80:
     opcode: 0x28
   - schema: add hl hl
     opcode: 0x29
-  - schema: ld hl [ imm18 ]
+  - schema: ld hl [ imm16 ]
     opcode: 0x2a
   - schema: dec hl
     opcode: 0x2b
@@ -526,3 +526,6 @@ z80:
     opcode: 0xfe
   - schema: rst38
     opcode: 0xff
+
+  - schema: retn
+    opcode: [0xed, 0x45]

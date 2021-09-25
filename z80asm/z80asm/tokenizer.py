@@ -1,122 +1,100 @@
 import re
-import sys
+
+from .symbols import DIRECTIVES, MNEMONIC_NAMES, OPERATORS, FLAGS, REGISTER_NAMES
+from .token import *
 from .interface import error, printv
-from .symbols import DIRECTIVES, MNEMONICS, REGISTER_NAMES, Z80_FLAG_NAMES, Z80_MNEMONIC_NAMES, Z80_REGISTER_NAMES, Mnemonic
 
-from . import ansi as a
 
-import logging
+LABEL_RX = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]+):')
+STRING_RX = re.compile(r'[\'\"].*?[\'\"]')
 
-logger = logging.getLogger(__name__)
-
-LABEL_RX = re.compile(r'([a-z_][a-z_\d]*):')
-
-def try_parsenum(str):
-  val = None
+def parsenum(word):
   try:
-    if str.startswith('0b'):
-      val = int(str[2:], 2)
-    elif str.startswith('0x'):
-      val = int(str[2:], 16)
+    if word.startswith('0b'):
+      return int(word[2:], 2)
+    elif word.startswith('0o'):
+      return int(word[2:], 8)
+    elif word.startswith('0x'):
+      return int(word[2:], 16)
     else:
-      val = int(str)
+      return int(word)
+  except ValueError:
+    return None
+
+def strip_comments(line):
+  try:
+    line = line[:line.index(';')]
   except ValueError:
     pass
-  return val
+  return line
 
-class Token:
-  DIRECTIVE = 'DIR'
-  NUMBER = 'NUM'
-  OPENING_PAREN = 'OPAR'
-  CLOSING_PAREN = 'CPAR'
-  MNEMONIC = 'MNEM'
-  REGISTER = 'REG'
-  FLAG = 'FLAG'
-  HERE = 'HERE'
-  LABEL = 'LBL'
-  OPERATOR = 'OPER'
-  LABEL_REF = 'REF'
+def tokenize(source):
+  printv(f'{a.GREEN}Tokenize{a.E}')
+  lblnames = re.findall(LABEL_RX, source)
 
-  def __init__(self, type, value, src_line):
-    self.type = type
-    self.value = value
-    self.src_line = src_line
-    self.signed = False
-    self.position = None
-    self.mnemonic = None
-    self.size = None
-    self.argc = 0
-
-  def __repr__(self):
-    return str(self)
-
-  def __str__(self):
-    pos = f' #{self.position:04x}' if self.position is not None else '      '
-    val = f'0x{self.value:<8x}' if type(self.value) == int else f'{self.value:<10}'
-    return (
-      f'{a.YELLOW}<'
-      f'{a.BLUE}{self.type:5s}{a.E} '
-      f'{val} L{self.src_line+1:<4d}{pos}'
-      f'{a.YELLOW}>{a.E}'
-    )
-
-def find_labels(source_code):
-  return re.findall(LABEL_RX, source_code)
-
-def tokenize(source_code, verbose=False):
-  printv(verbose, 'TOKENIZE')
-  def unexpected_token(word, line_number):
-    error(f'Unexpected token at line {line_number}:', word)
-
-  src = source_code
-  for symbol in '()[]+-*/&|':
+  src = source
+  for symbol in tuple('[](),') + tuple(OPERATORS):
     src = src.replace(symbol, f' {symbol} ')
-  src = src.replace(',', '')
-  labels = find_labels(src)
+  src = src.splitlines()
 
   tokens = []
-  data = src.splitlines()
-  for line_number, line in enumerate(data):
-    # Strip comments
-    try:
-      line = line[:line.index(';')]
-    except ValueError:
-      pass
+  newline = True
 
-    spline = [word.strip() for word in line.split(' ') if word != '']
-    for word in spline:
-      word = word.lower()
+  for n, line in enumerate(src):
+    strings = re.findall(STRING_RX, line)
+
+    line = strip_comments(line)
+    for i, s in enumerate(strings):
+      line = line.replace(s, f'@{i}')
+
+    line = [w for w in line.split(' ') if w != '']
+
+    newline = True
+
+    printv(f'{n+1:4}', end=' ')
+    for word in line:
+
+      token = None
       if word in DIRECTIVES:
-        token = Token(Token.DIRECTIVE, word, line_number)
+        token = TDirective(word, line=n)
+      elif word == '(':
+        token = TExprOpen(line=n)
+      elif word == ')':
+        token = TExprClose(line=n)
+      elif word in FLAGS:
+        token = TFlag(word, line=n)
       elif word == '$':
-        token = Token(Token.HERE, '$', line_number)
-      elif word in ('-', '+', '*', '/', '&', '|'):
-        token = Token(Token.OPERATOR, word, line_number)
-      elif word in ('(', '['):
-        token = Token(Token.OPENING_PAREN, word, line_number)
-      elif word in (')', ']'):
-        token = Token(Token.CLOSING_PAREN, word, line_number)
-      elif word.endswith(':'):
-        if re.match(LABEL_RX, word):
-          token = Token(Token.LABEL, word[:-1], line_number)
-        else:
-          unexpected_token(word, line_number)
-      elif word in Z80_MNEMONIC_NAMES:
-        token = Token(Token.MNEMONIC, word, line_number)
-      elif word in Z80_REGISTER_NAMES:
-        token = Token(Token.REGISTER, word, line_number)
-      elif word in Z80_FLAG_NAMES:
-        token = Token(Token.FLAG, word, line_number)
-      elif word in labels:
-        token = Token(Token.LABEL_REF, word, line_number)
+        token = THere(line=n)
+      elif word.endswith(':') and word[:-1] in lblnames:
+        token = TLabel(word[:-1], line=n)
+      elif word in lblnames:
+        token = TLabelRef(word, line=n)
+      elif word == '[':
+        token = TMemOpen(line=n)
+      elif word == ']':
+        token = TMemClose(line=n)
+      elif word in MNEMONIC_NAMES:
+        token = TMnemonic(word, line=n)
+      elif (val := parsenum(word)) is not None:
+        token = TNumber(val, line=n)
+      elif word in OPERATORS:
+        token = TOperator(word, line=n)
+      elif word in REGISTER_NAMES:
+        token = TRegister(word, line=n)
+      elif word == ',':
+        token = TSeparator(line=n)
+      elif word.startswith('@'):
+        token = TString(strings[int(word[1:])], line=n)
       else:
-        if (val := try_parsenum(word)) is not None:
-          token = Token(Token.NUMBER, val, line_number)
-        else:
-          unexpected_token(word, line_number)
+        error('test.s', n, 'Unexpected token:', word)
 
-      tokens.append(token)
-      printv(verbose, token)
+      if token:
+        printv(('     ' if not newline else '') + str(token))
+        tokens.append(token)
 
-  printv(verbose)
+      newline = False
+
+    linesep = TSeparator(value='\n', line=n)
+    printv(('     ' if not newline else '') + str(linesep))
+    tokens.append(linesep)
   return tokens

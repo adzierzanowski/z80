@@ -1,233 +1,189 @@
-from .interface import bytearr_fmt, error, printv, warning
-from .symbols import MNEMONICS
-from .tokenizer import Token, tokenize
-from math import log2, floor
-import sys
+from token import NUMBER
+from .token import *
 from . import ansi as a
+from .interface import bytearr_fmt, printv, warning
+from math import floor, log2
 
 
-class FirstPassState:
-  def __init__(self):
-    self.mtoken = None # first token of the current mnemonic
-    self.mfound = False
-    self.mnems = None # current matching mnemonics
-    self.mnem = None
-    self.mpos = 0
-    self.cpos = 0
-    self.last_line = 0
-    self.dtoken = None # directive token
+def bytesize(value):
+  if value == 0:
+    return 1
+  bindigits = floor(log2(value)+1)
+  return bindigits // 8 + 1 if bindigits % 8 else 0
 
-  def get_predicate(self, tok):
-    if tok.type == Token.NUMBER:
-      predicate = lambda m: m.schema[self.mpos] in ('imm8', 'imm16')
-    elif tok.type in (Token.LABEL_REF, Token.HERE):
-      predicate = lambda m: m.schema[self.mpos] == 'imm16'
-    elif tok.type == Token.OPENING_PAREN:
-      predicate = lambda m: m.schema[self.mpos] in '(['
-    elif tok.type == Token.CLOSING_PAREN:
-      predicate = lambda m: m.schema[self.mpos] in ')]'
-    else:
-      predicate = lambda m: len(m.schema) > self.mpos and m.schema[self.mpos] == tok.value
-    return predicate, ('Generic error',)
+def emitval(val, size):
+  return [(val >> (8 * i)) & 0xff for i in range(size)]
 
-  def find_mnemonic(self, tok):
-    if tok.type == Token.MNEMONIC:
-      self.mtoken = tok
-    haystack = self.mnems
-    if self.mpos == 0:
-      haystack = MNEMONICS
-      predicate = lambda m: m.schema[0] == tok.value
-    else:
-      predicate, _ = self.get_predicate(tok)
+def evaluate_size(tokens):
+  printv(f'{a.GREEN}Evaluate size and positions{a.E}')
 
-    self.mnems = [m for m in haystack if predicate(m)]
+  ptokens = []
 
-    if len(self.mnems) == 1:
-      self.mnem = self.mnems[0]
-      self.mtoken.position = self.cpos
-      self.mtoken.mnemonic = self.mnem
-      self.cpos += self.mnem.size
-      self.mfound = True
-      self.mpos += 1
-    elif len(self.mnems) == 0:
-      error(f'Unexpected token for {self.mtoken}: {tok}')
-    else:
-      self.mfound = False
-      self.mpos += 1
+  lblpos = {}
+  lastsize = 0
+  nextsize = 0
+  directive = None
+  pos = 0
+  noemit = False
+  for i, token in enumerate(tokens):
+    size = 0
+    printv(f'{i:4}', f'@{pos:04x}', token, end=' ')
 
-  def match_mnemonic(self, tok):
-    if not self.mfound:
-      self.find_mnemonic(tok)
-      return True
-    elif self.mtoken:
-      predicate, err = self.get_predicate(tok)
-      if predicate(self.mnem):
-        self.mpos += 1
+    if isinstance(token, TOpcode):
+      size = len(token.mnemonic.opcode)
+      if 'imm8' in token.mnemonic.schema:
+        nextsize = 1
+      elif 'imm16' in token.mnemonic.schema:
+        nextsize = 2
       else:
-        error(*err)
-      return True
-    return False
+        nextsize = 0
 
-def first_pass(tokens, verbose=False):
-  printv(verbose, 'FIRST PASS')
-
-  labels = {}
-  fps = FirstPassState()
-
-  for token in tokens:
-    if fps.last_line != token.src_line:
-      fps.dtoken = None
-      if fps.mtoken and not fps.mfound:
-        fps.mnems_ = [m for m in fps.mnems if len(m.schema) == fps.mpos]
-        if len(fps.mnems_) == 1:
-          fps.mtoken.mnemonic = fps.mnems_[0]
-        elif len(fps.mnems) == 0:
-          error('Mnemonic not found for token:', fps.mtoken)
-        else:
-          error('Mnemonic is ambiguous:', fps.mtoken, quit=False)
-          for fps.mnem in fps.mnems:
-            print(fps.mnem.pretty_schema, file=sys.stderr)
-          sys.exit(1)
-    fps.last_line = token.src_line
-
-    if fps.mtoken and fps.mfound:
-      if len(fps.mnem.schema) <= fps.mpos:
-        fps.mtoken = None
-        fps.mpos = 0
-
-    printv(verbose, token)
-
-    if token.type == Token.LABEL:
-      token.position = fps.cpos
-      labels[token.value] = fps.cpos
-
-    elif token.type == Token.DIRECTIVE:
-      fps.dtoken = token
-
-    elif token.type == Token.MNEMONIC:
-      fps.find_mnemonic(token)
-
-    elif token.type == Token.REGISTER:
-      if not fps.match_mnemonic(token):
-        error('Unexpected register without an instruction:', token)
-
-    elif token.type == Token.FLAG:
-      if not fps.match_mnemonic(token):
-        error('Unexpected flag without an instruction:', token)
-
-    elif token.type == Token.NUMBER:
-      if not fps.mfound:
-        fps.find_mnemonic(token)
-      elif fps.mtoken:
-        if fps.mnem.mnemonic[fps.mpos] == 'imm8':
-          if token.value < 0x100:
-            if fps.mtoken.signed:
-              if token.value not in range(-128, 128):
-                error(f'Expected a signed value in range [-128, 127] for {fps.mtoken}')
-              token.signed = True
-
-            token.position = fps.cpos
-            token.size = 1
-            fps.mpos += 1
-            fps.cpos += 1
-          else:
-            error(f'Expected an 8-bit value for {fps.mtoken}')
-        elif fps.mnem.mnemonic[fps.mpos] == 'imm16':
-          if token.value < 0x10000:
-            token.position = fps.cpos
-            token.size = 2
-            fps.mpos += 1
-            fps.cpos += 2
-          else:
-            error(f'Expected a 16-byte value for {fps.mtoken}')
-
-      elif fps.dtoken:
-        if fps.dtoken.value == '.db':
-          token.position = fps.cpos
-          token.size = 1
-          fps.cpos += 1
-        elif fps.dtoken.value == '.dw':
-          token.position = fps.cpos
-          token.size = 2
-          fps.cpos += 2
-        elif fps.dtoken.value == '.ds':
-          if fps.dtoken.argc == 0:
-            fps.dtoken.argc = 1
-            fps.dtoken.size = token.value
-            fps.dtoken.fill = 0
-            fps.cpos += token.value
-          elif fps.dtoken.argc == 1:
-            fps.dtoken.argc = 2
-            fps.dtoken.fill = token.value
-
-    elif token.type == Token.HERE:
-      if not fps.match_mnemonic(token):
-        error(f'Unexpected current position reference:', token)
+    elif isinstance(token, TLabelRef):
+      if nextsize:
+        size = nextsize
       else:
-        token.position = fps.cpos
-        token.value = fps.cpos - 3 # TODO: think if it makes sense
-        token.size = 2
+        size = 2
+      nextsize = 0
 
-    elif token.type == Token.LABEL_REF:
-      if not fps.match_mnemonic(token):
-        error(f'Label reference without an instruction: {token.value}')
+    elif isinstance(token, TDirective):
+      directive = token
 
-    elif token.type == Token.OPENING_PAREN:
-      if not fps.match_mnemonic(token):
-        error(f'Unexpected opening parenthesis', token)
+    elif isinstance(token, TNumber):
+      if directive:
+        if directive.value == 'ds':
+          noemit = True
+          if not directive.args.get('size'):
+            directive.args['size'] = token.value
+            size = token.value
+          elif not directive.args.get('fill'):
+            directive.args['fill'] = token.value
+            directive = None
+        elif directive.value == 'db':
+          size = 1
+        elif directive.value == 'dw':
+          size = 2
+      elif nextsize:
+        size = nextsize
+        nextsize = 0
+      else:
+        warning('test.s', token.line, 'Unexpected number (ignored):', token)
 
-    elif token.type == Token.CLOSING_PAREN:
-      if not fps.match_mnemonic(token):
-        error(f'Unexpected closing parenthesis', token)
+    elif isinstance(token, TExpression):
+      if directive:
+        if directive.value == 'ds':
+          noemit = True
+          val = token.evaluate(here=pos, lblpos=lblpos)
+          if not directive.args.get('size'):
+            directive.args['size'] = val
+            size = val
+          elif not directive.args.get('fill'):
+            directive.args['fill'] = val
+            directive = None
+      elif nextsize:
+        val = token.evaluate(here=(pos-lastsize), lblpos=lblpos)
+        if nextsize == 1:
+          val_ = val & 0xff
+          if val != val_:
+            warning('test.s', token.line, 'Expression value has been trucated:', val, '->', val_)
+            token.exprvalue = val_
+        elif nextsize == 2:
+          val_ = val & 0xffff
+          if val != val_:
+            warning('test.s', token.line, 'Expression value has been trucated:', val, '->', val_)
+            token.exprvalue = val_
+        size = nextsize
+      else:
+        warning('test.s', token.line, 'Unexpected expression (ignored):', token)
 
-    elif token.type == Token.OPERATOR:
-      pass
+      if token._value is not None:
+        printv(f'{a.CYAN}={a.E}{token.exprvalue}', end=' ')
 
-  printv(verbose)
-  return labels
+    elif isinstance(token, THere):
+      if nextsize:
+        if nextsize == 1:
+          val = (pos - lastsize) & 0xff
+          if (pos-lastsize) != val:
+            warning('test.s', token.line, 'Curent position value has been trucated:', pos-lastsize, '->', val_)
+          token.position = pos - lastsize
+        elif nextsize == 2:
+          val = (pos - lastsize) & 0xffff
+          if (pos - lastsize) != val:
+            error('test.s', token.line, 'Curent position value is greater than 0xffff:', token)
+          token.position = pos - lastsize
+        size = nextsize
 
-def assemble(source_code, verbose=False):
-  tokens = tokenize(source_code, verbose=verbose)
-  labels = first_pass(tokens, verbose=verbose)
+      if token.position is not None:
+        printv(f'{a.CYAN}@{a.E}{token.position}', end=' ')
 
-  tokens = [t for t in tokens if t.type != Token.LABEL]
+      nextsize = 0
 
-  printv(verbose, 'BYTECODE EMIT')
+    elif isinstance(token, TLabel):
+      lblpos[token.value] = pos
+      printv(f'{a.CYAN}@{a.E}x{pos:x}', end=' ')
+
+    elif isinstance(token, TSeparator):
+      noemit = True
+      if token.value == '\n':
+        directive = None
+        nextsize = 0
+
+    elif isinstance(token, TString):
+      if directive:
+        if directive.value == 'db':
+          size = len(token.value)
+        elif directive.value == 'dw':
+          size = len(token.value) * 2
+
+    lastsize = size
+    token.size = size
+    pos += size
+    printv(token.size if token.size else '')
+
+    if not noemit:
+      ptokens.append(token)
+    noemit = False
+
+  return ptokens, lblpos
+
+def assemble(tokens, lblpos):
+  printv(f'{a.GREEN}Assemble{a.E}')
 
   bytecode = []
-  mtok = None
-  for tok in tokens:
+
+  for i, token in enumerate(tokens):
+    printv(f'{i:4}', token, end=' ')
+
+
     emit = []
-    if tok.type == Token.MNEMONIC and not tok.mnemonic:
-      error('Token type is mnemonic but no mnemonic found:', tok)
 
-    if tok.mnemonic:
-      mtok = tok
-      emit = tok.mnemonic.opcode
-    elif tok.type == Token.DIRECTIVE:
-      if tok.value == '.ds':
-        emit = [tok.fill for _ in range(tok.size)]
-    elif tok.type == Token.LABEL_REF:
-      pos = labels[tok.value]
-      emit = [pos & 0xff, (pos >> 8) & 0xff]
-    elif tok.type == Token.NUMBER or tok.type == Token.HERE:
-      if tok.size is not None:
-        # number of bytes needed to cover the whole number
-        real_size = 1
-        if tok.value > 0:
-          bindigits = floor(log2(tok.value)+1)
-          real_size = bindigits // 8 + 1 if bindigits % 8 else 0
-        emit = [tok.value >> (i * 8) & 0xff for i in range(tok.size)]
-        if real_size > tok.size:
-          warning('Number has been truncated:', tok, '->', bytearr_fmt(emit))
 
-      elif mtok:
-        if 'imm8' in mtok.mnemonic.schema:
-          emit = [tok.value]
-        elif 'imm16' in mtok.mnemonic.schema:
-          emit = [tok.value & 0xff, (tok.value >> 8) & 0xff]
+    if isinstance(token, TDirective):
+      if token.value == 'ds':
+        size = token.args['size']
+        fill = token.args['fill']
+        emit = [fill] * size
+
+    elif isinstance(token, TExpression):
+      emit = emitval(token.exprvalue, token.size)
+
+    elif isinstance(token, THere):
+      emit = emitval(token.position, token.size)
+
+    elif isinstance(token, TLabelRef):
+      emit = emitval(lblpos[token.value], token.size)
+
+    elif isinstance(token, TNumber):
+      emit = emitval(token.value, token.size)
+
+    elif isinstance(token, TOpcode):
+      emit = token.mnemonic.opcode
+
+    elif isinstance(token, TString):
+      strbytes = [ord(c) for c in token.value[1:-1]]
+      emit = sum([emitval(b, 1) for b in strbytes], [])
+
 
     bytecode += emit
-    printv(verbose, tok, bytearr_fmt(emit, rle=True))
-  printv(verbose)
+    printv(bytearr_fmt(emit, rle=True))
+
   return bytecode
