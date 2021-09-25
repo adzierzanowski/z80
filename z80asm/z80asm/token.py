@@ -1,3 +1,5 @@
+from .symbols import OPERATORS
+from . import config
 from .interface import error
 from . import ansi as a
 
@@ -48,6 +50,11 @@ class TDirective(Token):
   def __init__(self, value, line=None):
     super().__init__(Token.DIRECTIVE, value, line=line)
     self.args = {}
+
+  def chfile(self):
+    fname = self.args.get('filename')
+    if self.value == 'include' and fname:
+      config.filename = fname
 
 class TExpression(Token):
   def __init__(self, value, rpn=None, opstack=None, line=None):
@@ -215,3 +222,6 @@ class TSeparator(Token):
 class TString(Token):
   def __init__(self, value, line=None):
     super().__init__(Token.STRING, value, line=line)
+
+    for symbol in tuple('[](),') + tuple(OPERATORS):
+      self.value = self.value.replace(f' {symbol} ', f'{symbol}')

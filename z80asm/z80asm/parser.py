@@ -1,8 +1,8 @@
 from re import match
 import sys
 from typing import Type
-from .symbols import MNEMONICS
-from .interface import error, printv
+from .symbols import Z80_MNEMONICS
+from .interface import error, printv, parsenum
 from .token import *
 
 
@@ -16,7 +16,12 @@ def parse_expressions(tokens):
   ixiy = False
 
   for i, token in enumerate(tokens):
-    if any([isinstance(token, T) for T in (TNumber, TLabelRef, THere)]):
+    if isinstance(token, TDirective):
+      if token.value == 'include':
+        token.chfile()
+      ptokens.append(token)
+
+    elif any([isinstance(token, T) for T in (TNumber, TLabelRef, THere)]):
       if etoken is None:
         etoken = TExpression('expr', rpn=[token], line=token.line)
       else:
@@ -123,12 +128,12 @@ def parse_opcodes(tokens):
         error('test.s', token.line+1, 'Expected a new line:', token)
       else:
         mtoken = token
-        matches = match(MNEMONICS, spos, lambda s: s == token.value)
+        matches = match(Z80_MNEMONICS, spos, lambda s: s == token.value)
 
     elif any([isinstance(token, T)
             for T in (TNumber, TLabelRef, THere, TExpression)]):
       if mtoken:
-        matches = match(matches, spos, lambda s: s in ('imm8', 'imm16'))
+        matches = match(matches, spos, lambda s: (s in ('imm8', 'imm16')) or (parsenum(s) == token.value))
         if matches:
           mtoken.operands.append(token)
 

@@ -32,4 +32,4 @@ int38: db 'I see you interrupted using INT', 0
 int66: db 'Non maskable interrupt', 0
 
 
-include 'test/test_files/io.s'
+include 'io.s'

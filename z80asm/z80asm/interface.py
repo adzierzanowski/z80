@@ -15,6 +15,19 @@ def printv(*args, **kwargs):
   if config.verbose:
     print(*args, **kwargs)
 
+def parsenum(word):
+  try:
+    if word.startswith('0b'):
+      return int(word[2:], 2)
+    elif word.startswith('0o'):
+      return int(word[2:], 8)
+    elif word.startswith('0x'):
+      return int(word[2:], 16)
+    else:
+      return int(word)
+  except ValueError:
+    return None
+
 def bytearr_fmt(ls, rle=False):
   if rle:
     last = None

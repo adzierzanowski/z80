@@ -3,7 +3,7 @@ ei
 im 1
 jp start
 
-ds 0x38 - $
+ds 0x38 - $, 0
 mint:
   ld ix, int38
   call print_str
@@ -11,14 +11,14 @@ mint:
   ei
   reti
 
-ds 0x66 - $
+ds 0x66 - $, 0
 nmi:
   ld ix, int66
   call print_str
   call flush
   retn
 
-ds 0x100 - $
+ds 0x100 - $, 0
 
 start:
   ld ix, hello

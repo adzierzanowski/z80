@@ -25,10 +25,3 @@ def main():
   if args.output:
     with open(args.output, 'wb') as f:
       f.write(bytes(bytecode))
-
-    # parse expressions
-    # find opcodes
-    # parse directives *
-    # emit bytecode
-    #   evaluate expressions
-    #   fill address

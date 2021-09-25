@@ -54,6 +54,8 @@ def evaluate_size(tokens):
 
     elif isinstance(token, TDirective):
       directive = token
+      if token.value == 'include':
+        token.chfile()
 
     elif isinstance(token, TNumber):
       if directive:
@@ -182,6 +184,8 @@ def assemble(tokens, lblpos):
         size = token.args['size']
         fill = token.args['fill']
         emit = [fill] * size
+      elif token.value == 'include':
+        token.chfile()
 
     elif isinstance(token, TExpression):
       emit = emitval(token.exprvalue, token.size)

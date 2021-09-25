@@ -5,8 +5,11 @@ from collections import namedtuple
 Operator = namedtuple('Operator', ('precedence', 'associativity'))
 
 class Mnemonic:
-  def __init__(self, schema, opcode, signed=False):
+  def __init__(self, schema, opcode, undocumented=False, duplicate=False, signed=False):
     self.schema = schema.split(' ')
+    self.duplicate = duplicate
+    self.undocumented = undocumented
+
     if type(opcode) == int:
       self.opcode = (opcode,)
     else:
@@ -21,7 +24,13 @@ class Mnemonic:
 
   @staticmethod
   def from_yaml(data):
-    return Mnemonic(data['schema'], data['opcode'], data.get('signed', False))
+    return Mnemonic(
+      data['schema'],
+      data['opcode'],
+      duplicate=data.get('duplicate', False),
+      undocumented=data.get('undocumented', False),
+      signed=data.get('signed', False)
+    )
 
   @property
   def pretty_schema(self):
@@ -73,8 +82,8 @@ with open(Path(__file__).parent/'mnemonics.yml', 'r') as f:
   data = yaml.full_load(f)
 
 MNEMONICS = [Mnemonic.from_yaml(m) for m in data['z80']]
-
-Z80_MNEMONIC_NAMES = [m.schema[0] for m in MNEMONICS]
+Z80_MNEMONICS = [m for m in MNEMONICS if ((not m.duplicate) and (not m.undocumented))]
+Z80_MNEMONIC_NAMES = [m.schema[0] for m in Z80_MNEMONICS]
 MNEMONIC_NAMES = Z80_MNEMONIC_NAMES
 
 Z80_REGISTER_NAMES = (

@@ -26,7 +26,7 @@ class TestAgainstGNU(TestCase):
     f2 = os.path.join('test', 'test_files', 'gnu', fname)
 
     subprocess.call(('python3', '-m', 'z80asm', f1, '-o', 'tmp_py'))
-    subprocess.call(('z80asm', f2, '-o', 'tmp_z'))
+    subprocess.call(('z80asm', '-I', 'test/test_files/gnu', f2, '-o', 'tmp_z'))
     subprocess.call(('z80dasm', 'tmp_z', '-o', 'tmp_z.ds'))
     subprocess.call(('z80dasm', 'tmp_py', '-o', 'tmp_py.ds'))
 
@@ -52,3 +52,6 @@ class TestAgainstGNU(TestCase):
 
   def test_expr(self):
     self._test_file('expr.s')
+
+  def test_multi_include(self):
+    self._test_file('test4.s')

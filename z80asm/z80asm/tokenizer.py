@@ -1,26 +1,15 @@
 import re
 
+import os
 from .symbols import DIRECTIVES, MNEMONIC_NAMES, OPERATORS, FLAGS, REGISTER_NAMES
 from .token import *
-from .interface import error, printv
-
+from .interface import error, printv, parsenum
+from . import config
 
 LABEL_RX = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]+):')
 STRING_RX = re.compile(r'[\'\"].*?[\'\"]')
-INCLUDE_RX = re.compile(r'')
+INCLUDE_RX = re.compile(r'include [\'\"](.*?)[\'\"]')
 
-def parsenum(word):
-  try:
-    if word.startswith('0b'):
-      return int(word[2:], 2)
-    elif word.startswith('0o'):
-      return int(word[2:], 8)
-    elif word.startswith('0x'):
-      return int(word[2:], 16)
-    else:
-      return int(word)
-  except ValueError:
-    return None
 
 def strip_comments(line):
   try:
@@ -31,15 +20,25 @@ def strip_comments(line):
 
 
 def resolve_includes(source):
+  includes = re.finditer(INCLUDE_RX, source)
+  src = source
+  for inc in includes:
+    directive = inc.group(0)
+    fname = inc.group(1)
+    back_to_origin = f'include "{config.filename}"'
 
+    with open(os.path.join(os.path.dirname(config.filename), fname)) as f:
+      data = f.read()
+      src = src.replace(directive, '\n'.join([directive, data, back_to_origin]))
 
-  return source
+  return src
 
 def tokenize(source):
   printv(f'{a.GREEN}Tokenize{a.E}')
-  lblnames = re.findall(LABEL_RX, source)
 
-  src = source
+  src = resolve_includes(source)
+  lblnames = re.findall(LABEL_RX, src)
+
   for symbol in tuple('[](),') + tuple(OPERATORS):
     src = src.replace(symbol, f' {symbol} ')
   src = src.splitlines()
@@ -57,6 +56,7 @@ def tokenize(source):
     line = [w for w in line.split(' ') if w != '']
 
     newline = True
+    include = None
 
     printv(f'{n+1:4}', end=' ')
     for word in line:
@@ -64,6 +64,8 @@ def tokenize(source):
       token = None
       if word in DIRECTIVES:
         token = TDirective(word, line=n)
+        if token.value == 'include':
+          include = token
       elif word == '(':
         token = TExprOpen(line=n)
       elif word == ')':
@@ -92,6 +94,12 @@ def tokenize(source):
         token = TSeparator(line=n)
       elif word.startswith('@'):
         token = TString(strings[int(word[1:])], line=n)
+        if include:
+          include.args['filename'] = token.value[1:-1]
+          include.chfile()
+          include = None
+          token = None
+
       else:
         error('test.s', n+1, 'Unexpected token:', word)
 
