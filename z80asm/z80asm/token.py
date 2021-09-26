@@ -173,20 +173,8 @@ class TOpcode(Token):
     super().__init__(Token.OPCODE, str(mnemonic), line=line)
     self.mnemonic = mnemonic
 
-  @property
-  def opsize(self):
-    s = len(self.mnemonic.opcode)
-    s += self.mnemonic.schema.count('imm8')
-    s += self.mnemonic.schema.count('imm16')
-
-    '''
-    if 'imm8' in self.mnemonic.schema:
-      s += 1
-    elif 'imm16' in self.mnemonic.schema:
-      s += 2
-    '''
-
-    return s
+    # Special case for opcodes in form DD CB <OPERAND> 30
+    self.reverse_operand = (len(self.mnemonic.opcode) == 3) and (self.mnemonic.opcode[1] == 0xcb)
 
 class TOperator(Token):
   def __init__(self, value, line=None):

@@ -170,41 +170,44 @@ def assemble(tokens, lblpos):
   printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
 
   bytecode = []
+  defer = []
 
   for i, token in enumerate(tokens):
     printv(f'{i+1:4} {token.line+1:4}', token, end=' ')
 
-
-    emit = []
-
+    emit = defer
+    defer = []
 
     if isinstance(token, TDirective):
       if token.value == 'ds':
         size = token.args['size']
         fill = token.args['fill']
-        emit = [fill] * size
+        emit += [fill] * size
       elif token.value == 'include':
         token.chfile()
 
     elif isinstance(token, TExpression):
-      emit = emitval(token.exprvalue, token.size)
+      emit = emitval(token.exprvalue, token.size) + emit
 
     elif isinstance(token, THere):
-      emit = emitval(token.position, token.size)
+      emit = emitval(token.position, token.size) + emit
 
     elif isinstance(token, TLabelRef):
-      emit = emitval(lblpos[token.value], token.size)
+      emit = emitval(lblpos[token.value], token.size) + emit
 
     elif isinstance(token, TNumber):
-      emit = emitval(token.value, token.size)
+      emit = emitval(token.value, token.size) + emit
 
     elif isinstance(token, TOpcode):
-      emit = token.mnemonic.opcode
+      if token.reverse_operand:
+        emit = token.mnemonic.opcode[:2] + emit
+        defer = token.mnemonic.opcode[2:]
+      else:
+        emit = list(token.mnemonic.opcode) + emit
 
     elif isinstance(token, TString):
       strbytes = [ord(c) for c in token.value[1:-1]]
-      emit = sum([emitval(b, 1) for b in strbytes], [])
-
+      emit = sum([emitval(b, 1) for b in strbytes], []) + emit
 
     bytecode += emit
     printv(bytearr_fmt(emit, rle=True))

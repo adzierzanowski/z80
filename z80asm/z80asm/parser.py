@@ -166,10 +166,12 @@ def parse_opcodes(tokens):
             else:
               exact = [m for m in matches if len(m.schema) == spos]
               if len(exact) == 1:
-                otoken = TOpcode(exact[0], line=mtoken.line)
+                emnem = exact[0]
+                otoken = TOpcode(emnem, line=mtoken.line)
                 ptokens.append(otoken)
                 if mtoken.operands:
-                  ptokens += mtoken.operands
+                  operands_count = emnem.schema.count('imm8') + emnem.schema.count('imm16') * 2
+                  ptokens += mtoken.operands[-operands_count:]
                 mtoken = None
                 spos = 0
               else:
