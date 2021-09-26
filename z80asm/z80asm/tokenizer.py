@@ -1,15 +1,17 @@
+import os
 import re
 
-import os
-from .symbols import DIRECTIVES, MNEMONIC_NAMES, OPERATORS, FLAGS, REGISTER_NAMES
-from .token import *
-from .interface import error, printv, parsenum
 from . import config
+from .interface import error, parsenum, printv
+from .symbols import (DIRECTIVES, FLAGS, MNEMONIC_NAMES, OPERATORS,
+                      REGISTER_NAMES, Z80_DOCUMENTED_MNEMONIC_NAMES,
+                      Z80_MNEMONIC_NAMES)
+from .token import *
 
 LABEL_RX = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]+):')
 STRING_RX = re.compile(r'[\'\"].*?[\'\"]')
 INCLUDE_RX = re.compile(r'include [\'\"](.*?)[\'\"]')
-
+MNEMONIC_NAMES = Z80_MNEMONIC_NAMES if config.undocumented else Z80_DOCUMENTED_MNEMONIC_NAMES
 
 def strip_comments(line):
   try:

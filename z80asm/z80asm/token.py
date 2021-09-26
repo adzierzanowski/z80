@@ -1,7 +1,7 @@
-from .symbols import OPERATORS
+from . import ansi as a
 from . import config
 from .interface import error
-from . import ansi as a
+from .symbols import OPERATORS
 
 
 class Token:

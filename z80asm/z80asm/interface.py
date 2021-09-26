@@ -1,4 +1,5 @@
 import sys
+
 from . import ansi as a
 from . import config
 

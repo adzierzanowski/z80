@@ -18,6 +18,8 @@ are replaced with square brackets as in NASM. The expressions like `0x100 - $`
 can use `()`.
 
 It has the following shortcomings (which I wish to improve):
+* No relative jump sigend operands support
+* No `org` directive
 * Not all opcodes are defined yet
 * No `def` directive (known as `equ` in other assemblers)
 * No unary operators in expressions

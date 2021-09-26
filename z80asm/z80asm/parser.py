@@ -1,9 +1,11 @@
-from re import match
 import sys
-from typing import Type
-from .symbols import Z80_MNEMONICS
-from .interface import error, printv, parsenum
+
+from . import config
+from .interface import error, parsenum, printv
+from .symbols import Z80_DOCUMENTED_MNEMONICS, Z80_UNIQUE_MNEMONICS
 from .token import *
+
+MNEMONICS = Z80_UNIQUE_MNEMONICS if config.undocumented else Z80_DOCUMENTED_MNEMONICS
 
 
 def parse_expressions(tokens):
@@ -128,7 +130,7 @@ def parse_opcodes(tokens):
         error('test.s', token.line+1, 'Expected a new line:', token)
       else:
         mtoken = token
-        matches = match(Z80_MNEMONICS, spos, lambda s: s == token.value)
+        matches = match(MNEMONICS, spos, lambda s: s == token.value)
 
     elif any([isinstance(token, T)
             for T in (TNumber, TLabelRef, THere, TExpression)]):

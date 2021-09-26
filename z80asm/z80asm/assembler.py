@@ -1,9 +1,8 @@
-from re import T
-from token import NUMBER
-from .token import *
+from math import floor, log2
+
 from . import ansi as a
 from .interface import bytearr_fmt, printv, warning
-from math import floor, log2
+from .token import *
 
 
 def bytesize(value):

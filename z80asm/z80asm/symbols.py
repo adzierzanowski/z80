@@ -1,12 +1,14 @@
-from pathlib import Path
-import yaml
 from collections import namedtuple
+from pathlib import Path
+
+import yaml
 
 Operator = namedtuple('Operator', ('precedence', 'associativity'))
 
 class Mnemonic:
   def __init__(self, schema, opcode, undocumented=False, duplicate=False, signed=False):
-    self.schema = schema.split(' ')
+    self.original_schema = schema
+    self.schema = schema.replace(',', '').split(' ')
     self.duplicate = duplicate
     self.undocumented = undocumented
 
@@ -34,7 +36,7 @@ class Mnemonic:
 
   @property
   def pretty_schema(self):
-    out = ' '.join(self.schema)
+    out = self.original_schema
     out = out.replace(' ]', ']')
     out = out.replace('[ ', '[')
     return out
@@ -82,14 +84,21 @@ with open(Path(__file__).parent/'mnemonics.yml', 'r') as f:
   data = yaml.full_load(f)
 
 MNEMONICS = [Mnemonic.from_yaml(m) for m in data['z80']]
-Z80_MNEMONICS = [m for m in MNEMONICS if ((not m.duplicate) and (not m.undocumented))]
+
+Z80_MNEMONICS = MNEMONICS
+Z80_UNIQUE_MNEMONICS = [m for m in Z80_MNEMONICS if not m.duplicate]
+Z80_DOCUMENTED_MNEMONICS = [m for m in Z80_UNIQUE_MNEMONICS if not m.undocumented]
+
 Z80_MNEMONIC_NAMES = [m.schema[0] for m in Z80_MNEMONICS]
+Z80_DOCUMENTED_MNEMONIC_NAMES = [m.schema[0] for m in Z80_DOCUMENTED_MNEMONICS]
+
 MNEMONIC_NAMES = Z80_MNEMONIC_NAMES
 
 Z80_REGISTER_NAMES = (
-  'a', 'b', 'c', 'd', 'e', 'h', 'l',
+  'ixh', 'ixl', 'iyh', 'iyl',
   'af', 'bc', 'de', 'hl',
-  'af\'', 'sp', 'ix', 'iy'
+  'af\'', 'sp', 'ix', 'iy',
+  'a', 'b', 'c', 'd', 'e', 'h', 'l', 'i', 'r'
 )
 
 Z80_FLAG_NAMES = (
