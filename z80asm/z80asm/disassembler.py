@@ -1,6 +1,16 @@
 from . import ansi as a
 from .symbols import Z80_MNEMONICS
 
+import re
+
+ANSIRX = re.compile(r'(\[\d*?;\d*?;\d*?m)')
+
+def ansipad(ansistr, pad):
+  s = ansistr.replace('\x1b', '')
+  s = re.sub(ANSIRX, '', s)
+  s = s.replace('[0m', '').strip()
+  s = ansistr + (pad - len(s)) * ' '
+  return s
 
 def operandval(operands):
   val = 0
@@ -16,6 +26,9 @@ def disassemble(bytecode):
   imm = 0
   out = ''
   i = 0
+  skip = False
+  skipped_byte = None
+  defer_opcode = False
 
   while True:
     nomore = False
@@ -24,36 +37,48 @@ def disassemble(bytecode):
     except IndexError:
       nomore = True
 
-    if imm and not nomore:
+
+    if skip and not nomore:
+      skip = False
+      skipped_byte = b
+      i += 1
+      continue
+    elif imm and not nomore:
       operands.append(b)
       imm -= 1
     else:
       if match:
         val = operandval(operands)
         out += match.pretty_schema.replace('imm8', f'0x{val:02x}').replace('imm16', f'0x{val:04x}') + '\n'
-        schema = f'{match.pretty_schema:30}'
-        schema = schema.split(' ')
-        opcode, schema = schema[0], ' '.join(schema[1:])
-        schema = schema + ('  ' * schema.count('imm8'))
-        schema = schema + (' ' * schema.count('imm16'))
+
+        schema = match.pretty_schema
         schema = schema.replace('[', f'{a.YELLOW}[{a.BLUE}')
         schema = schema.replace(']', f'{a.YELLOW}]{a.BLUE}')
         schema = schema.replace('imm8', f'{a.CYAN}{val:02x}{a.BLUE}')
         schema = schema.replace('imm16', f'{a.CYAN}{val:04x}{a.BLUE}')
-        schema = a.BLUE + opcode + ' ' + schema
-
+        schema = a.BLUE + schema
+        schema = ansipad(schema, 30)
 
         opcode_bytes = match.opcode
+        deferred = None
+        if defer_opcode:
+          opcode_bytes, deferred = opcode_bytes[:2], opcode_bytes[-1]
+          defer_opcode = False
+
         opcodefmt = a.BLUE + ' '.join([f'{byte:02x}' for byte in opcode_bytes]) + a.E
-        operandfmt = a.CYAN + ' '.join([f'{byte:02x}' for byte in operands]) + a.E
+        deferredfmt = a.BLUE + f'{deferred:02x}' + a.E if deferred is not None else ''
+        operandfmt = a.CYAN + ' '.join([f'{byte:02x}' for byte in operands]) + a.E + ' ' + deferredfmt
         opcodechars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in opcode_bytes]) + a.E
         operandchars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in operands]) + a.E
+
+        opcodefmt = ansipad(opcodefmt, 8)
+        operandfmt = ansipad(operandfmt, 30)
 
         pos = i - len(operands) - len(match.opcode)
         undoc = f'{a.RED}undocumented{a.E}' if match.undocumented else ''
         dup = f'{a.RED}duplicate{a.E}' if match.duplicate else ''
 
-        print(f'{pos:04x}    {schema} {opcodefmt} {operandfmt:30} {opcodechars} {operandchars} {undoc} {dup}')
+        print(f'{pos:04x}    {schema} {opcodefmt} {operandfmt} {opcodechars} {operandchars} {undoc} {dup}')
         operands = []
         match = None
         matches = Z80_MNEMONICS
@@ -62,6 +87,14 @@ def disassemble(bytecode):
 
       if len(matches) == 1:
         match = matches[0]
+        if skipped_byte is not None:
+          imm = 0
+          operands = [skipped_byte]
+          opos = 0
+          skipped_byte = None
+          defer_opcode = True
+          continue
+
         imm = match.schema.count('imm8')
         imm += match.schema.count('imm16') * 2
 
@@ -71,7 +104,10 @@ def disassemble(bytecode):
         else:
           opos += 1
       elif len(matches) > 1:
+        if opos == 1 and matches[0].opcode[1] == 0xcb:
+          skip = True
         opos += 1
+
     i += 1
     if nomore:
       break

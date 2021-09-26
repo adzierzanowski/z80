@@ -55,3 +55,6 @@ class TestAgainstGNU(TestCase):
 
   def test_multi_include(self):
     self._test_file('test4.s')
+
+  def test_relative_jumps(self):
+    self._test_file('reljmp.s')

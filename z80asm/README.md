@@ -20,17 +20,17 @@ can use `()`.
 It has the following shortcomings (which I wish to improve):
 * No relative jump sigend operands support
 * No `org` directive
-* Not all opcodes are defined yet
 * No `def` directive (known as `equ` in other assemblers)
 * No unary operators in expressions
-* `ds` directive has two mandatory arguments (unlike z80asm in which the second one can be omitted)
-* No `times` directive (well, there's a similar `ds` so not so much of a problem)
 * No higher-level abstractions like macros, conditional assembling, etc.
+* No `times` directive (well, there's a similar `ds` so not so much of a problem)
+* `ds` directive has two mandatory arguments (unlike z80asm in which the second one can be omitted)
 
 But in turn it has a colorful verbose output (if you use `-v` flag)
 
 # Roadmap
 
-* Add remaining opcodes
+* Add relative jump support
+* Add `org` directive
+* Add unary operators
 * Add i8080 mode, mixed mode, strict mode
-* Add a disassembler

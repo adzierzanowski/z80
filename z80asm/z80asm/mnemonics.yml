@@ -51,6 +51,7 @@ z80:
     opcode: 0x17
   - schema: jr imm8
     opcode: 0x18
+    signed: true
   - schema: add hl, de
     opcode: 0x19
   - schema: ld a, [ de ]
