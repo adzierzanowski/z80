@@ -4,7 +4,6 @@ from .symbols import I8080_MNEMONICS, Z80_MNEMONICS
 
 import re
 
-print('CONFIG.CPU', config.cpu)
 MNEMONICS = Z80_MNEMONICS if config.cpu == 'z80' else I8080_MNEMONICS
 
 ANSIRX = re.compile(r'(\[\d*?;\d*?;\d*?m)')

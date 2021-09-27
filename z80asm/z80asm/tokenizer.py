@@ -117,7 +117,7 @@ def tokenize(source):
           token = None
 
       else:
-        error('test.s', n+1, 'Unexpected token:', word)
+        error(n, 'tokenizer::tokenize', 'Unexpected token:', word)
 
       if token:
         printv(('     ' if not newline else '') + str(token))

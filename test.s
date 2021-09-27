@@ -1,16 +1,11 @@
-include 'start.s'
+jr $+3
+jr 3
+jr $ 
+jr $ - 3
 
+jr $+7
+jr 7
+jr $ 
+jr $ - 7
 
-start:
-  call flush
-  halt
-  ld a, 0
-stlp:
-  inc a
-  push af
-  call print_bin
-  call flush
-  pop af
-  jp stlp
-
-include 'io.s'
+jp $

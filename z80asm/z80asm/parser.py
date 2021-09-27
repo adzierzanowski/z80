@@ -11,6 +11,11 @@ if config.cpu == 'z80':
 elif config.cpu == 'i8080':
   MNEMONICS = I8080_UNIQUE_MNEMONICS
 
+if config.original_parentheses:
+  EXACT_OPMATCH_TOKEN_TYPES = (TMemOpen, TMemClose, TRegister, TFlag, TExprOpen, TExprClose)
+else:
+  EXACT_OPMATCH_TOKEN_TYPES = (TMemOpen, TMemClose, TRegister, TFlag)
+
 
 def parse_expressions(tokens):
   printv(f'{a.GREEN}Parse expressions{a.E}')
@@ -37,7 +42,11 @@ def parse_expressions(tokens):
     elif isinstance(token, TRegister):
       if token.value in ('ix', 'iy'):
         ixiy = True
-      ptokens.append(token)
+
+      if etoken:
+        omitted.append(token)
+      else:
+        ptokens.append(token)
 
     elif isinstance(token, TOperator):
       if etoken is None:
@@ -45,19 +54,20 @@ def parse_expressions(tokens):
           etoken = TExpression('expr', opstack=[token], line=token.line)
           omitted.append(token)
         elif not ixiy:
-          error('test.s', token.line+1, 'Unexpected operator:', token)
+          error(token.line, 'parser::parse_expressions', 'Unexpected operator:', token)
         else:
           ptokens.append(token)
       else:
         omitted.append(token)
-        while etoken.opstack:
-          nextop = etoken.opstack[-1]
-          if isinstance(nextop, TOperator) and token < nextop:
-            etoken.rpn.append(etoken.opstack.pop())
-          else:
-            break
+        if not (ixiy and config.original_parentheses):
+          while etoken.opstack:
+            nextop = etoken.opstack[-1]
+            if isinstance(nextop, TOperator) and token < nextop:
+              etoken.rpn.append(etoken.opstack.pop())
+            else:
+              break
 
-        etoken.opstack.append(token)
+          etoken.opstack.append(token)
 
     elif isinstance(token, TExprOpen):
       if etoken is None:
@@ -77,7 +87,7 @@ def parse_expressions(tokens):
 
         omitted.append(token)
       else:
-        error('test.s', token.line+1, 'Unexpected closing parenthesis:', token)
+        error(token.line, 'parser::parse_expressions', 'Unexpected closing parenthesis:', token)
 
     elif isinstance(token, TSeparator):
       if etoken is None:
@@ -111,7 +121,7 @@ def parse_expressions(tokens):
     else:
       if etoken:
         if etoken.valid():
-          error('test.s', token.line+1, 'WTF', etoken)
+          error(token.line, 'parser::parse_expressions', 'WTF', etoken)
         else:
           ptokens += omitted
           etoken = None
@@ -121,7 +131,7 @@ def parse_expressions(tokens):
 
   for i, pt in enumerate(ptokens):
     try:
-      printv(f'{i+1:4}', f'{pt.line:4}', pt, pt.rpnfmt if isinstance(pt, TExpression) else '')
+      printv(f'{i+1:4}', f'{pt.line+1:4}', pt, pt.rpnfmt if isinstance(pt, TExpression) else '')
     except TypeError:
       printv(pt)
 
@@ -151,7 +161,7 @@ def parse_opcodes(tokens):
         token.chfile()
     elif isinstance(token, TMnemonic):
       if mtoken:
-        error('test.s', token.line+1, 'Expected a new line:', token)
+        error(token.line, 'parser::parse_opcodes', 'Expected a new line:', token)
       else:
         mtoken = token
         matches = match(MNEMONICS, spos, lambda s: s == token.value)
@@ -164,9 +174,13 @@ def parse_opcodes(tokens):
           mtoken.operands.append(token)
 
     elif any([isinstance(token, T)
-              for T in (TMemOpen, TMemClose, TRegister, TFlag)]):
+              for T in EXACT_OPMATCH_TOKEN_TYPES]):
       if mtoken:
-        matches = match(matches, spos, lambda s: s == token.value)
+        predicate = lambda s: s == token.value
+        if config.original_parentheses:
+          predicate = lambda s: s == token.value.replace('(', '[').replace(')', ']')
+
+        matches = match(matches, spos, predicate)
 
     elif isinstance(token, TString):
       if mtoken:
@@ -199,13 +213,13 @@ def parse_opcodes(tokens):
                 mtoken = None
                 spos = 0
               else:
-                error('test.s', mtoken.line+1, 'Ambiguous mnemonic:', mtoken, quit=False)
-                print('Did you mean one of the following?')
+                error(mtoken.line, 'parser::parse_opcodes', 'Ambiguous mnemonic:', mtoken, quit=False)
+                print('Did you mean one of the following?', file=sys.stderr)
                 for match in matches:
                   print('   ', match, file=sys.stderr)
                 sys.exit(1)
           else:
-            error('test.s', mtoken.line+1, 'No matches for mnemonic:', mtoken)
+            error(mtoken.line, 'parser::parse_opcodes', 'No matches for mnemonic:', mtoken)
       elif token.value == ',':
         pass
 

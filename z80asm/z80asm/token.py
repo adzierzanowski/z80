@@ -1,6 +1,6 @@
 from . import ansi as a
 from . import config
-from .interface import error
+from .interface import error, warning
 from .symbols import OPERATORS
 
 
@@ -62,17 +62,6 @@ class TExpression(Token):
     super().__init__(Token.EXPRESSION, value, line=line)
     self.rpn = rpn if rpn else []
     self.opstack = opstack if opstack else []
-    self._value = None
-
-  @property
-  def exprvalue(self):
-    if self._value:
-      return self._value
-    return self.evaluate()
-
-  @exprvalue.setter
-  def exprvalue(self, val):
-    self._value = val
 
   def valid(self):
     return self.rpn and not self.opstack and any((isinstance(t, TOperator) for t in self.rpn))
@@ -89,12 +78,12 @@ class TExpression(Token):
         if here is not None:
           val.append(here)
         else:
-          error('test.s', self.line, 'Can\'t evaluate current position:', self)
+          error(self.line, 'TExpression::evaluate', 'Can\'t evaluate current position:', self)
       elif isinstance(tok, TLabelRef):
-        if lpos := lblpos.get(tok.value):
+        if (lpos := lblpos.get(tok.value)) is not None:
           val.append(lpos)
         else:
-          error('test.s', self.line, 'Can\'t evaluate label position:', tok)
+          error(self.line, 'TExpression::evaluate', 'Can\'t evaluate label position:', tok)
       elif isinstance(tok, TOperator):
         if tok.unary:
           a = val.pop()

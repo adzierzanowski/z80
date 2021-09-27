@@ -25,7 +25,7 @@ print_bin_1:
   ld a, '1'
 print_bin_check:
   out (0xaa), a
-  srl c, 1
+  srl c
   jp Z, print_bin_end
   ld a, b
   jp print_bin_next

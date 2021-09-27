@@ -6,11 +6,12 @@ import yaml
 Operator = namedtuple('Operator', ('precedence', 'associativity'))
 
 class Mnemonic:
-  def __init__(self, schema, opcode, undocumented=False, duplicate=False, signed=False):
+  def __init__(self, schema, opcode, undocumented=False, duplicate=False, signed=False, relative=False):
     self.original_schema = schema
     self.schema = schema.replace(',', '').split(' ')
     self.duplicate = duplicate
     self.undocumented = undocumented
+    self.relative = relative
 
     if type(opcode) == int:
       self.opcode = (opcode,)
@@ -31,7 +32,8 @@ class Mnemonic:
       data['opcode'],
       duplicate=data.get('duplicate', False),
       undocumented=data.get('undocumented', False),
-      signed=data.get('signed', False)
+      signed=data.get('signed', False),
+      relative=data.get('relative', False)
     )
 
   @property

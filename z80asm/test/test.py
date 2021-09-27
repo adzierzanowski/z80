@@ -3,6 +3,32 @@ from unittest import TestCase
 from z80asm.token import *
 import subprocess
 
+
+def rm(fname):
+  if os.path.exists(fname):
+    os.remove(fname)
+
+def rmtmp():
+  rm('tmp_py')
+  rm('tmp_z')
+  rm('tmp_py.ds')
+  rm('tmp_z.ds')
+
+def mktmp(fname, samefile=False):
+  f2 = os.path.join('test', 'test_files', 'gnu', fname)
+  if samefile:
+    f1 = f2
+  else:
+    f1 = os.path.join('test', 'test_files', 'py', fname)
+
+  if samefile:
+    subprocess.call(('python3', '-m', 'z80asm', '--addr-deref-parentheses', f1, '-o', 'tmp_py'))
+  else:
+    subprocess.call(('python3', '-m', 'z80asm', f1, '-o', 'tmp_py'))
+  subprocess.call(('z80asm', '-I', 'test/test_files/gnu', f2, '-o', 'tmp_z'))
+  subprocess.call(('z80dasm', 'tmp_z', '-o', 'tmp_z.ds'))
+  subprocess.call(('z80dasm', 'tmp_py', '-o', 'tmp_py.ds'))
+
 class TestOpcodes(TestCase):
   def setUp(self):
     return super().setUp()
@@ -11,25 +37,11 @@ class TestOpcodes(TestCase):
     return super().tearDown()
 
 class TestAgainstGNU(TestCase):
-  def _rm(self, fname):
-    if os.path.exists(fname):
-      os.remove(fname)
-
   def tearDown(self):
-    self._rm('tmp_py')
-    self._rm('tmp_z')
-    self._rm('tmp_py.ds')
-    self._rm('tmp_z.ds')
+    rmtmp()
 
   def _test_file(self, fname):
-    f1 = os.path.join('test', 'test_files', 'py', fname)
-    f2 = os.path.join('test', 'test_files', 'gnu', fname)
-
-    subprocess.call(('python3', '-m', 'z80asm', f1, '-o', 'tmp_py'))
-    subprocess.call(('z80asm', '-I', 'test/test_files/gnu', f2, '-o', 'tmp_z'))
-    subprocess.call(('z80dasm', 'tmp_z', '-o', 'tmp_z.ds'))
-    subprocess.call(('z80dasm', 'tmp_py', '-o', 'tmp_py.ds'))
-
+    mktmp(fname)
     with open('tmp_z.ds', 'r') as z:
       z_lines = z.read().splitlines()
       with open('tmp_py.ds', 'r') as py:
