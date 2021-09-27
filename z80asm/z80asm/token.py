@@ -55,6 +55,7 @@ class TDirective(Token):
     fname = self.args.get('filename')
     if self.value == 'include' and fname:
       config.filename = fname
+      config.current_include = self
 
 class TExpression(Token):
   def __init__(self, value, rpn=None, opstack=None, line=None):
@@ -85,7 +86,7 @@ class TExpression(Token):
       if isinstance(tok, TNumber):
         val.append(tok.value)
       elif isinstance(tok, THere):
-        if here:
+        if here is not None:
           val.append(here)
         else:
           error('test.s', self.line, 'Can\'t evaluate current position:', self)
@@ -95,36 +96,45 @@ class TExpression(Token):
         else:
           error('test.s', self.line, 'Can\'t evaluate label position:', tok)
       elif isinstance(tok, TOperator):
-        b = val.pop()
-        a = val.pop()
+        if tok.unary:
+          a = val.pop()
+          if tok.value == '-':
+            val.append(-a)
+          elif tok.value == '+':
+            val.append(a)
+          elif tok.value == '~':
+            val.append(a ^ 0xff)
+        else:
+          b = val.pop()
+          a = val.pop()
 
-        if tok.value == '|':
-          val.append(a | b)
-        elif tok.value == '^':
-          val.append(a ^ b)
-        elif tok.value == '&':
-          val.append(a & b)
-        elif tok.value == '<<':
-          val.append(a << b)
-        elif tok.value == '>>':
-          val.append(a >> b)
-        elif tok.value == '+':
-          val.append(a + b)
-        elif tok.value == '-':
-          val.append(a - b)
-        elif tok.value == '*':
-          val.append(a * b)
-        elif tok.value == '/':
-          val.append(a // b)
-        elif tok.value == '%':
-          val.append(a % b)
+          if tok.value == '|':
+            val.append(a | b)
+          elif tok.value == '^':
+            val.append(a ^ b)
+          elif tok.value == '&':
+            val.append(a & b)
+          elif tok.value == '<<':
+            val.append(a << b)
+          elif tok.value == '>>':
+            val.append(a >> b)
+          elif tok.value == '+':
+            val.append(a + b)
+          elif tok.value == '-':
+            val.append(a - b)
+          elif tok.value == '*':
+            val.append(a * b)
+          elif tok.value == '/':
+            val.append(a // b)
+          elif tok.value == '%':
+            val.append(a % b)
 
     self._value = val[0]
     return val[0]
 
   @property
   def rpnfmt(self):
-    return '[' + ' '.join([str(t.value) for t in self.rpn]) + ']'
+    return '[' + ' '.join([(a.ORANGE if isinstance(t, TOperator) and t.unary else '') + str(t.value) + a.E for t in self.rpn]) + ']'
 
 class TExprClose(Token):
   def __init__(self, line=None):
@@ -177,24 +187,26 @@ class TOpcode(Token):
     self.reverse_operand = (len(self.mnemonic.opcode) == 3) and (self.mnemonic.opcode[1] == 0xcb)
 
 class TOperator(Token):
-  def __init__(self, value, line=None):
+  def __init__(self, value, unary=False, line=None):
     super().__init__(Token.OPERATOR, value, line=line)
+    self.unary = unary or value == '~'
     self.precedence = {
-      '|': 1,
-      '^': 2,
-      '&': 3,
-      '<<': 4,
-      '>>': 4,
-      '+': 5,
-      '-': 5,
-      '*': 6,
-      '/': 6,
-      '%': 6
+      '~': 1,
+      '|': 2,
+      '^': 3,
+      '&': 4,
+      '<<': 5,
+      '>>': 5,
+      '+': 1 if self.unary else 6,
+      '-': 1 if self.unary else 6,
+      '*': 7,
+      '/': 7,
+      '%': 7
     }[value]
-    self.associativity = 'left' if value in '|^&<<>>*/%-+' else 'right'
+    self.associativity = 'right' if self.unary else 'left'
 
   def __lt__(self, other):
-    smaller_precedence = self.precedence < other.precedence
+    smaller_precedence = self.precedence > other.precedence
     same_precedence = self.precedence == other.precedence
     left_assoc = self.associativity == 'left'
     return smaller_precedence or (same_precedence and left_assoc)

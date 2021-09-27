@@ -1,0 +1,74 @@
+body {
+  background-color: #282828;
+  color: #eee;
+}
+
+* {
+  font-family: 'Jetbrains Mono', monospace;
+}
+
+.panels {
+  display: flex;
+  gap: 20px;
+}
+
+.panel {
+  border: 1px solid #444;
+  padding: 10px;
+}
+
+.panel h1 {
+  font-size: 20px;
+}
+
+.panel button {
+  width: 120px;
+  background: none;
+  border: none;
+  color: #eee;
+  cursor: pointer;
+  background-color: #444;
+  padding: 4px 0;
+}
+
+.panel button:hover {
+  background-color: #555;
+}
+
+.panel input, .panel textarea {
+  background-color: #444;
+  color: #eee;
+  border: none;
+}
+
+.panel textarea {
+  width: 100%;
+  font-size: 12px;
+}
+
+#disassembled {
+  white-space: pre;
+  font-size: 12px;
+  overflow-y: scroll;
+  max-height: 400px;
+}
+
+.program-panel {
+  max-height: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.program-panel textarea {
+  height: 400px;
+}
+
+.program-panel .panel {
+  flex-grow: 1;
+}
+
+.source-panel {
+  max-width: 50vw;
+}

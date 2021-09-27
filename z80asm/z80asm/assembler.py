@@ -34,8 +34,6 @@ def evaluate_size(tokens):
     if isinstance(token, TOpcode):
       size = len(token.mnemonic.opcode)
 
-      if 'imm8' in token.mnemonic.schema:
-        nextsize = 1
       if imm8cnt := token.mnemonic.schema.count('imm8'):
         nextsize = 1
         nextnextsize = imm8cnt - 1
@@ -43,6 +41,7 @@ def evaluate_size(tokens):
         nextsize = 2
       else:
         nextsize = 0
+
 
     elif isinstance(token, TLabelRef):
       if nextsize:
@@ -93,12 +92,12 @@ def evaluate_size(tokens):
         if nextsize == 1:
           val_ = val & 0xff
           if val != val_:
-            warning('test.s', token.line+1, 'Expression value has been trucated:', val, '->', val_)
+            warning('test.s', token.line+1, 'Expression value has been truncated:', val, '->', val_)
             token.exprvalue = val_
         elif nextsize == 2:
           val_ = val & 0xffff
           if val != val_:
-            warning('test.s', token.line+1, 'Expression value has been trucated:', val, '->', val_)
+            warning('test.s', token.line+1, 'Expression value has been truncated:', val, '->', val_)
             token.exprvalue = val_
         size = nextsize
       else:
@@ -112,7 +111,7 @@ def evaluate_size(tokens):
         if nextsize == 1:
           val = (pos - lastsize) & 0xff
           if (pos-lastsize) != val:
-            warning('test.s', token.line+1, 'Curent position value has been trucated:', pos-lastsize, '->', val_)
+            warning('test.s', token.line+1, 'Curent position value has been truncated:', pos-lastsize, '->', val_)
           token.position = pos - lastsize
         elif nextsize == 2:
           val = (pos - lastsize) & 0xffff
@@ -148,10 +147,10 @@ def evaluate_size(tokens):
 
         if nextsize == 1:
           if len(tokval) > 1:
-            warning('test.s', token.line+1, 'String value has been trucated to a single character:', token.value, '->', val)
+            warning('test.s', token.line+1, 'String value has been truncated to a single character:', token.value, '->', val)
         elif nextsize == 2:
           if len(tokval) > 2:
-            warning('test.s', token.line+1, 'String value has been trucated to first two characters:', token.value, '->', val)
+            warning('test.s', token.line+1, 'String value has been truncated to first two characters:', token.value, '->', val)
         size = nextsize
 
     lastsize = size
@@ -181,7 +180,10 @@ def assemble(tokens, lblpos):
     if isinstance(token, TDirective):
       if token.value == 'ds':
         size = token.args['size']
-        fill = token.args['fill']
+        try:
+          fill = token.args['fill']
+        except KeyError:
+          error('test.s', token.line, 'Directive ds expects two arguments:', token)
         emit += [fill] * size
       elif token.value == 'include':
         token.chfile()

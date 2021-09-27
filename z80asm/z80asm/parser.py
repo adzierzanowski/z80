@@ -1,11 +1,15 @@
+from math import isfinite
 import sys
 
 from . import config
 from .interface import error, parsenum, printv
-from .symbols import Z80_DOCUMENTED_MNEMONICS, Z80_UNIQUE_MNEMONICS
+from .symbols import I8080_UNIQUE_MNEMONICS, Z80_DOCUMENTED_MNEMONICS, Z80_UNIQUE_MNEMONICS
 from .token import *
 
-MNEMONICS = Z80_UNIQUE_MNEMONICS if config.undocumented else Z80_DOCUMENTED_MNEMONICS
+if config.cpu == 'z80':
+  MNEMONICS = Z80_UNIQUE_MNEMONICS if config.undocumented else Z80_DOCUMENTED_MNEMONICS
+elif config.cpu == 'i8080':
+  MNEMONICS = I8080_UNIQUE_MNEMONICS
 
 
 def parse_expressions(tokens):
@@ -37,9 +41,13 @@ def parse_expressions(tokens):
 
     elif isinstance(token, TOperator):
       if etoken is None:
-        if not ixiy:
+        if token.unary:
+          etoken = TExpression('expr', opstack=[token], line=token.line)
+          omitted.append(token)
+        elif not ixiy:
           error('test.s', token.line+1, 'Unexpected operator:', token)
-        ptokens.append(token)
+        else:
+          ptokens.append(token)
       else:
         omitted.append(token)
         while etoken.opstack:
@@ -87,6 +95,19 @@ def parse_expressions(tokens):
         etoken = None
         omitted = []
 
+    elif isinstance(token, TMemClose):
+      if etoken is None:
+        ptokens.append(token)
+      else:
+        if etoken.valid():
+          ptokens.append(etoken)
+          ptokens.append(token)
+        else:
+          omitted.append(token)
+          ptokens += omitted
+        etoken = None
+        omitted = []
+
     else:
       if etoken:
         if etoken.valid():
@@ -125,7 +146,10 @@ def parse_opcodes(tokens):
   for i, token in enumerate(tokens):
     printv(f'{i+1:4} {token.line+1:4}', token)
 
-    if isinstance(token, TMnemonic):
+    if isinstance(token, TDirective):
+      if token.value == 'include':
+        token.chfile()
+    elif isinstance(token, TMnemonic):
       if mtoken:
         error('test.s', token.line+1, 'Expected a new line:', token)
       else:

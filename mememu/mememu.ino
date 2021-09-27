@@ -16,7 +16,7 @@
 
 #define READY_LED 13
 
-#define RAM_SIZE 0x1100
+#define RAM_SIZE 0x1400
 #define OUTBUF_SIZE 0x400
 
 #ifdef DEBUG

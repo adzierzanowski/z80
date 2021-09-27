@@ -6,6 +6,7 @@ import dotenv
 import serial
 import threading
 import subprocess
+from tkinter.scrolledtext import ScrolledText
 
 
 dotenv.load_dotenv()
@@ -28,7 +29,9 @@ class InbufThread(threading.Thread):
         except UnicodeDecodeError:
           text = str(text)[2:-1]
 
-        self.inbuf.set(self.inbuf.get()+f'{text}')
+        self.inbuf.insert(tk.END, f'{text}')
+        self.inbuf.see('end')
+      time.sleep(0.5)
 
 class GUI:
   def __init__(self, root):
@@ -52,12 +55,12 @@ class GUI:
     self.outbuf_btn.grid(row=5, column=1, sticky='we')
 
 
-    self.inbuf_label = ttk.Label(textvariable=self.inbuf, wraplength=200, font=('Courier', ))
+    self.inbuf_label = ScrolledText(font=('Courier', ))
     self.inbuf_label.grid(row=6, column=0, sticky='we')
 
     self.inbuf_clr_btn = ttk.Button(text='Clear', command=self.clear_inbuf)
     self.inbuf_clr_btn.grid(row=5, column=2, sticky='we')
-    self.inbuf_thread = InbufThread(self.clks, self.inbuf)
+    self.inbuf_thread = InbufThread(self.clks, self.inbuf_label)
     self.root.protocol('WM_DELETE_WINDOW', self.on_close)
     self.inbuf_thread.start()
 
@@ -72,7 +75,7 @@ class GUI:
     self.root.bind('c', self.clear_inbuf)
 
   def clear_inbuf(self, *a):
-    self.inbuf.set('')
+    self.inbuf_label.delete('1.0', tk.END)
 
   def send(self, *a):
     self.clks.write(b'w' + self.outbuf_entry.get().encode('ascii') + b'\n')
@@ -85,7 +88,7 @@ class GUI:
         except UnicodeDecodeError:
           text = str(text)[2:-1]
 
-        self.inbuf.set(self.inbuf.get()+f'{text}')
+        self.inbuf_label.insert(tk.END, f'{text}')
 
   def create_clock_panel(self):
     self.clock_panel = ttk.Frame()
@@ -201,7 +204,9 @@ class GUI:
 
   def _up(self):
     progname = self.program_entry.get()
-    subprocess.call(('z80asm', progname, '-o', 'test'))
+    #subprocess.call(('z80asm', progname, '-o', 'test'))
+    subprocess.call(('python3', '-m', 'z80asm', progname, '-vo', 'test'))
+
     subprocess.call(('python3', 'prog.py', memport, 'test'))
 
 root = tk.Tk()

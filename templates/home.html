@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="panels">
+  <div class="panel">
+    <h1>Control</h1>
+    <button onclick="cmd('tick')">Tick</button>
+    <button onclick="cmd('reset')">Reset</button><br>
+    <button onclick="cmd('run')">Run</button>
+    <button onclick="cmd('stop')">Stop</button>
+    <button onclick="cmd('continue')">Continue</button>
+  </div>
+
+  <div class="panel">
+    <h1>Interrupts</h1>
+    <button onclick="cmd('nmi')">NMI</button>
+    <button onclick="cmd('nmi', '3')">NMI + 3 ticks</button>
+    <button onclick="cmd('irq')">IRQ</button>
+  </div>
+
+  <div class="panel">
+    <h1>Clock settings</h1>
+    <button onclick="cmd('ms')">ms</button>
+    <button onclick="cmd('us')">&mu;s</button>
+    <br>
+    <input type="text" id="speed-input">
+    <button onclick="cmd('speed', document.getElementById('speed-input').value)">Set speed</button>
+  </div>
+
+</div>
+
+<div class="program-panel">
+  <div class="panel source-panel">
+    <h1>Source code</h1>
+    <textarea id="source"></textarea><br>
+    <button onclick="assemble()">Assemble</button>
+    <button onclick="upload()">Upload</button>
+  </div>
+
+  <div class="panel dasm-panel">
+    <h1>Disassembled</h1>
+    <div id="disassembled">
+
+    </div>
+  </div>
+
+  <div class="panel">
+    <h1>IO</h1>
+    <input type="text" id="write-input">
+    <button onclick="cmd('write', document.getElementById('write-input').value)">Send</button>
+    <button onclick="cmd('clear', cmd('clear'))">Clear</button>
+    <br>
+    <textarea id="output"></textarea>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
+{% endblock %}

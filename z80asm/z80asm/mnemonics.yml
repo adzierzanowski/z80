@@ -610,6 +610,7 @@ z80:
   - schema: ld [ imm16 ], hl
     opcode: [0xed, 0x63]
     undocumented: true
+    duplicate: true
   - schema: neg
     opcode: [0xed, 0x64]
     undocumented: true
@@ -3182,3 +3183,543 @@ z80:
   - opcode: [0xfd, 0xcb, 0xff]
     schema: set 7, [ iy + imm8 ], ai
     undocumented: true
+
+i8080:
+  - opcode: 0x00
+    schema: nop
+  - opcode: 0x01
+    schema: lxi b, imm16
+  - opcode: 0x02
+    schema: stax b
+  - opcode: 0x03
+    schema: inx b
+  - opcode: 0x04
+    schema: inr b
+  - opcode: 0x05
+    schema: dcr b
+  - opcode: 0x06
+    schema: mvi b, imm8
+  - opcode: 0x07
+    schema: rlc
+  - opcode: 0x08
+    schema: nop
+    duplicate: true
+  - opcode: 0x09
+    schema: dad b
+  - opcode: 0x0a
+    schema: ldax b
+  - opcode: 0x0b
+    schema: dcx b
+  - opcode: 0x0c
+    schema: inr c
+  - opcode: 0x0d
+    schema: dcr c
+  - opcode: 0x0e
+    schema: mvi c, imm8
+  - opcode: 0x0f
+    schema: rrc
+
+  - opcode: 0x10
+    schema: nop
+    duplicate: true
+  - opcode: 0x11
+    schema: lxi d, imm16
+  - opcode: 0x12
+    schema: stax d
+  - opcode: 0x13
+    schema: inx d
+  - opcode: 0x14
+    schema: inr d
+  - opcode: 0x15
+    schema: dcr d
+  - opcode: 0x16
+    schema: mvi d, imm8
+  - opcode: 0x17
+    schema: ral
+  - opcode: 0x18
+    schema: nop
+    duplicate: true
+  - opcode: 0x19
+    schema: dad d
+  - opcode: 0x1a
+    schema: ldax d
+  - opcode: 0x1b
+    schema: dcx d
+  - opcode: 0x1c
+    schema: inr e
+  - opcode: 0x1d
+    schema: dcr e
+  - opcode: 0x1e
+    schema: mvi e, imm8
+  - opcode: 0x1f
+    schema: rar
+
+  - opcode: 0x20
+    schema: nop
+    duplicate: true
+  - opcode: 0x21
+    schema: lxi h, imm16
+  - opcode: 0x22
+    schema: shld imm16
+  - opcode: 0x23
+    schema: inx h
+  - opcode: 0x24
+    schema: inr h
+  - opcode: 0x25
+    schema: dcr h
+  - opcode: 0x26
+    schema: mvi h, imm8
+  - opcode: 0x27
+    schema: daa
+  - opcode: 0x28
+    schema: nop
+    duplicate: true
+  - opcode: 0x29
+    schema: dad h
+  - opcode: 0x2a
+    schema: lhld imm16
+  - opcode: 0x2b
+    schema: dcx h
+  - opcode: 0x2c
+    schema: inr l
+  - opcode: 0x2d
+    schema: dcr l
+  - opcode: 0x2e
+    schema: mvi l, imm8
+  - opcode: 0x2f
+    schema: cma
+
+  - opcode: 0x30
+    schema: nop
+    duplicate: true
+  - opcode: 0x31
+    schema: lxi sp, imm16
+  - opcode: 0x32
+    schema: sta imm16
+  - opcode: 0x33
+    schema: inx sp
+  - opcode: 0x34
+    schema: inr m
+  - opcode: 0x35
+    schema: dcr m
+  - opcode: 0x36
+    schema: mvi m, imm8
+  - opcode: 0x37
+    schema: stc
+  - opcode: 0x38
+    schema: nop
+    duplicate: true
+  - opcode: 0x39
+    schema: dad sp
+  - opcode: 0x3a
+    schema: lda imm16
+  - opcode: 0x3b
+    schema: dcx sp
+  - opcode: 0x3c
+    schema: inr a
+  - opcode: 0x3d
+    schema: dcr a
+  - opcode: 0x3e
+    schema: mvi a, imm8
+  - opcode: 0x3f
+    schema: cmc
+
+  - opcode: 0x40
+    schema: mov b, b
+  - opcode: 0x41
+    schema: mov b, c
+  - opcode: 0x42
+    schema: mov b, d
+  - opcode: 0x43
+    schema: mov b, e
+  - opcode: 0x44
+    schema: mov b, h
+  - opcode: 0x45
+    schema: mov b, l
+  - opcode: 0x46
+    schema: mov b, m
+  - opcode: 0x47
+    schema: mov b, a
+  - opcode: 0x48
+    schema: mov c, b
+  - opcode: 0x49
+    schema: mov c, c
+  - opcode: 0x4a
+    schema: mov c, d
+  - opcode: 0x4b
+    schema: mov c, e
+  - opcode: 0x4c
+    schema: mov c, h
+  - opcode: 0x4d
+    schema: mov c, l
+  - opcode: 0x4e
+    schema: mov c, m
+  - opcode: 0x4f
+    schema: mov c, a
+
+  - opcode: 0x50
+    schema: mov d, b
+  - opcode: 0x51
+    schema: mov d, c
+  - opcode: 0x52
+    schema: mov d, d
+  - opcode: 0x53
+    schema: mov d, e
+  - opcode: 0x54
+    schema: mov d, h
+  - opcode: 0x55
+    schema: mov d, l
+  - opcode: 0x56
+    schema: mov d, m
+  - opcode: 0x57
+    schema: mov d, a
+  - opcode: 0x58
+    schema: mov e, b
+  - opcode: 0x59
+    schema: mov e, c
+  - opcode: 0x5a
+    schema: mov e, d
+  - opcode: 0x5b
+    schema: mov e, e
+  - opcode: 0x5c
+    schema: mov e, h
+  - opcode: 0x5d
+    schema: mov e, l
+  - opcode: 0x5e
+    schema: mov e, m
+  - opcode: 0x5f
+    schema: mov e, a
+
+  - opcode: 0x60
+    schema: mov h, b
+  - opcode: 0x61
+    schema: mov h, c
+  - opcode: 0x62
+    schema: mov h, d
+  - opcode: 0x63
+    schema: mov h, e
+  - opcode: 0x64
+    schema: mov h, h
+  - opcode: 0x65
+    schema: mov h, l
+  - opcode: 0x66
+    schema: mov h, m
+  - opcode: 0x67
+    schema: mov h, a
+  - opcode: 0x68
+    schema: mov l, b
+  - opcode: 0x69
+    schema: mov l, c
+  - opcode: 0x6a
+    schema: mov l, d
+  - opcode: 0x6b
+    schema: mov l, e
+  - opcode: 0x6c
+    schema: mov l, h
+  - opcode: 0x6d
+    schema: mov l, l
+  - opcode: 0x6e
+    schema: mov l, m
+  - opcode: 0x6f
+    schema: mov l, a
+
+  - opcode: 0x70
+    schema: mov m, b
+  - opcode: 0x71
+    schema: mov m, c
+  - opcode: 0x72
+    schema: mov m, d
+  - opcode: 0x73
+    schema: mov m, e
+  - opcode: 0x74
+    schema: mov m, h
+  - opcode: 0x75
+    schema: mov m, l
+  - opcode: 0x76
+    schema: hlt
+  - opcode: 0x77
+    schema: mov m, a
+  - opcode: 0x78
+    schema: mov a, b
+  - opcode: 0x79
+    schema: mov a, c
+  - opcode: 0x7a
+    schema: mov a, d
+  - opcode: 0x7b
+    schema: mov a, e
+  - opcode: 0x7c
+    schema: ov a, h
+  - opcode: 0x7d
+    schema: mov a, l
+  - opcode: 0x7e
+    schema: mov a, m
+  - opcode: 0x7f
+    schema: mov a, a
+
+  - opcode: 0x80
+    schema: add b
+  - opcode: 0x81
+    schema: add c
+  - opcode: 0x82
+    schema: add d
+  - opcode: 0x83
+    schema: add e
+  - opcode: 0x84
+    schema: add h
+  - opcode: 0x85
+    schema: add l
+  - opcode: 0x86
+    schema: add m
+  - opcode: 0x87
+    schema: add a
+  - opcode: 0x88
+    schema: adc b
+  - opcode: 0x89
+    schema: adc c
+  - opcode: 0x8a
+    schema: adc d
+  - opcode: 0x8b
+    schema: adc e
+  - opcode: 0x8c
+    schema: adc h
+  - opcode: 0x8d
+    schema: adc l
+  - opcode: 0x8e
+    schema: adc m
+  - opcode: 0x8f
+    schema: adc a
+
+  - opcode: 0x90
+    schema: sub b
+  - opcode: 0x91
+    schema: sub c
+  - opcode: 0x92
+    schema: sub d
+  - opcode: 0x93
+    schema: sub e
+  - opcode: 0x94
+    schema: sub h
+  - opcode: 0x95
+    schema: sub l
+  - opcode: 0x96
+    schema: sub m
+  - opcode: 0x97
+    schema: sub a
+  - opcode: 0x98
+    schema: sbb b
+  - opcode: 0x99
+    schema: sbb c
+  - opcode: 0x9a
+    schema: sbb d
+  - opcode: 0x9b
+    schema: sbb e
+  - opcode: 0x9c
+    schema: sbb h
+  - opcode: 0x9d
+    schema: sbb l
+  - opcode: 0x9e
+    schema: sbb m
+  - opcode: 0x9f
+    schema: sbb a
+
+  - opcode: 0xa0
+    schema: ana b
+  - opcode: 0xa1
+    schema: ana c
+  - opcode: 0xa2
+    schema: ana d
+  - opcode: 0xa3
+    schema: ana e
+  - opcode: 0xa4
+    schema: ana h
+  - opcode: 0xa5
+    schema: ana l
+  - opcode: 0xa6
+    schema: ana m
+  - opcode: 0xa7
+    schema: ana a
+  - opcode: 0xa8
+    schema: xra b
+  - opcode: 0xa9
+    schema: xra c
+  - opcode: 0xaa
+    schema: xra d
+  - opcode: 0xab
+    schema: xra e
+  - opcode: 0xac
+    schema: xra h
+  - opcode: 0xad
+    schema: xra l
+  - opcode: 0xae
+    schema: xra m
+  - opcode: 0xaf
+    schema: xra a
+
+  - opcode: 0xb0
+    schema: ora b
+  - opcode: 0xb1
+    schema: ora c
+  - opcode: 0xb2
+    schema: ora d
+  - opcode: 0xb3
+    schema: ora e
+  - opcode: 0xb4
+    schema: ora h
+  - opcode: 0xb5
+    schema: ora l
+  - opcode: 0xb6
+    schema: ora m
+  - opcode: 0xb7
+    schema: ora a
+  - opcode: 0xb8
+    schema: cmp b
+  - opcode: 0xb9
+    schema: cmp c
+  - opcode: 0xba
+    schema: cmp d
+  - opcode: 0xbb
+    schema: cmp e
+  - opcode: 0xbc
+    schema: cmp h
+  - opcode: 0xbd
+    schema: cmp l
+  - opcode: 0xbe
+    schema: cmp m
+  - opcode: 0xbf
+    schema: cmp a
+
+  - opcode: 0xc0
+    schema: rnz
+  - opcode: 0xc1
+    schema: pop b
+  - opcode: 0xc2
+    schema: jnz imm16
+  - opcode: 0xc3
+    schema: jmp imm16
+  - opcode: 0xc4
+    schema: cnz imm16
+  - opcode: 0xc5
+    schema: push b
+  - opcode: 0xc6
+    schema: adi imm8
+  - opcode: 0xc7
+    schema: rst 0
+  - opcode: 0xc8
+    schema: rz
+  - opcode: 0xc9
+    schema: ret
+  - opcode: 0xca
+    schema: jz imm16
+  - opcode: 0xcb
+    schema: jmp imm16
+    duplicate: true
+  - opcode: 0xcc
+    schema: cz imm16
+  - opcode: 0xcd
+    schema: call imm16
+  - opcode: 0xce
+    schema: aci imm8
+  - opcode: 0xcf
+    schema: rst 1
+
+  - opcode: 0xd0
+    schema: rnc
+  - opcode: 0xd1
+    schema: pop d
+  - opcode: 0xd2
+    schema: jnc imm16
+  - opcode: 0xd3
+    schema: out imm8
+  - opcode: 0xd4
+    schema: cnc imm16
+  - opcode: 0xd5
+    schema: push d
+  - opcode: 0xd6
+    schema: sui imm8
+  - opcode: 0xd7
+    schema: rst 2
+  - opcode: 0xd8
+    schema: rc
+  - opcode: 0xd9
+    schema: ret
+    duplicate: true
+  - opcode: 0xda
+    schema: jc imm16
+  - opcode: 0xdb
+    schema: in imm8
+  - opcode: 0xdc
+    schema: cc imm16
+  - opcode: 0xdd
+    schema: call imm16
+    duplicate: true
+  - opcode: 0xde
+    schema: sbi imm8
+  - opcode: 0xdf
+    schema: rst 3
+
+  - opcode: 0xe0
+    schema: rpo
+  - opcode: 0xe1
+    schema: pop h
+  - opcode: 0xe2
+    schema: jpo imm16
+  - opcode: 0xe3
+    schema: xthl
+  - opcode: 0xe4
+    schema: cpo imm16
+  - opcode: 0xe5
+    schema: push h
+  - opcode: 0xe6
+    schema: ani imm8
+  - opcode: 0xe7
+    schema: rst 4
+  - opcode: 0xe8
+    schema: rpe
+  - opcode: 0xe9
+    schema: pchl
+  - opcode: 0xea
+    schema: jpe imm16
+  - opcode: 0xeb
+    schema: xchg
+  - opcode: 0xec
+    schema: cpe imm16
+  - opcode: 0xed
+    schema: call imm16
+    duplicate: true
+  - opcode: 0xee
+    schema: xri imm8
+  - opcode: 0xef
+    schema: rst 5
+  - opcode: 0xf0
+    schema: rp
+  - opcode: 0xf1
+    schema: pop psw
+  - opcode: 0xf2
+    schema: jp imm16
+  - opcode: 0xf3
+    schema: di
+  - opcode: 0xf4
+    schema: cp imm16
+  - opcode: 0xf5
+    schema: push psw
+  - opcode: 0xf6
+    schema: ori imm8
+  - opcode: 0xf7
+    schema: rst 6
+  - opcode: 0xf8
+    schema: rm
+  - opcode: 0xf9
+    schema: sphl
+  - opcode: 0xfa
+    schema: jm imm16
+  - opcode: 0xfb
+    schema: ei
+  - opcode: 0xfc
+    schema: cm imm16
+  - opcode: 0xfd
+    schema: call imm16
+    duplicate: true
+  - opcode: 0xfe
+    schema: cpi imm8
+  - opcode: 0xff
+    schema: rst 7

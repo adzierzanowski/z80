@@ -5,6 +5,8 @@ from . import config
 
 
 def error(fname, line, *msg, quit=True):
+  if config.current_include:
+    line -= config.current_include.line
   print(f'{a.RED}{config.filename}:{line}: error:{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
   if quit:
     sys.exit(1)

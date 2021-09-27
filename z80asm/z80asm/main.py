@@ -1,14 +1,13 @@
 from argparse import ArgumentParser
 
 from . import config
-from .assembler import assemble, evaluate_size
-from .disassembler import disassemble
 
 
 def main():
   argparser = ArgumentParser('z80asm')
   argparser.add_argument('file', type=str)
   argparser.add_argument('-d', '--disassemble', action='store_true')
+  argparser.add_argument('-i', '--i8080', action='store_true', help='Intel 8080 mode')
   argparser.add_argument('-o', '--output', type=str)
   argparser.add_argument('--documented', action='store_true', help='use only documented opcodes')
   argparser.add_argument('-v', '--verbose', action='store_true')
@@ -19,7 +18,11 @@ def main():
     config.verbose = True
   if args.documented:
     config.undocumented = False
+  if args.i8080:
+    config.cpu = 'i8080'
 
+  from .assembler import assemble, evaluate_size
+  from .disassembler import disassemble
   from .parser import parse_expressions, parse_opcodes
   from .tokenizer import tokenize
 

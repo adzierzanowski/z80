@@ -3,15 +3,23 @@ import re
 
 from . import config
 from .interface import error, parsenum, printv
-from .symbols import (DIRECTIVES, FLAGS, MNEMONIC_NAMES, OPERATORS,
-                      REGISTER_NAMES, Z80_DOCUMENTED_MNEMONIC_NAMES,
-                      Z80_MNEMONIC_NAMES)
+from .symbols import (DIRECTIVES, I8080_MNEMONIC_NAMES, I8080_REGISTER_NAMES, OPERATORS, Z80_DOCUMENTED_MNEMONIC_NAMES, Z80_FLAG_NAMES,
+                      Z80_MNEMONIC_NAMES, Z80_REGISTER_NAMES)
 from .token import *
+
+if config.cpu == 'z80':
+  MNEMONIC_NAMES = Z80_MNEMONIC_NAMES if config.undocumented else Z80_DOCUMENTED_MNEMONIC_NAMES
+  FLAGS = Z80_FLAG_NAMES
+  REGISTER_NAMES = Z80_REGISTER_NAMES
+elif config.cpu == 'i8080':
+  MNEMONIC_NAMES = I8080_MNEMONIC_NAMES
+  REGISTER_NAMES = I8080_REGISTER_NAMES
+  FLAGS = []
 
 LABEL_RX = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]+):')
 STRING_RX = re.compile(r'[\'\"].*?[\'\"]')
 INCLUDE_RX = re.compile(r'include [\'\"](.*?)[\'\"]')
-MNEMONIC_NAMES = Z80_MNEMONIC_NAMES if config.undocumented else Z80_DOCUMENTED_MNEMONIC_NAMES
+
 
 def strip_comments(line):
   try:
@@ -68,6 +76,7 @@ def tokenize(source):
         token = TDirective(word, line=n)
         if token.value == 'include':
           include = token
+          include.chfile()
       elif word == '(':
         token = TExprOpen(line=n)
       elif word == ')':
@@ -89,7 +98,12 @@ def tokenize(source):
       elif (val := parsenum(word)) is not None:
         token = TNumber(val, line=n)
       elif word in OPERATORS:
-        token = TOperator(word, line=n)
+        unary = any([
+          isinstance(tokens[-1], T)
+          for T in (TExprOpen, TMnemonic, TSeparator, TDirective, TOperator)
+        ]) and word in '+-'
+
+        token = TOperator(word, unary=unary, line=n)
       elif word in REGISTER_NAMES:
         token = TRegister(word, line=n)
       elif word == ',':

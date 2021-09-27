@@ -2,7 +2,8 @@
 
 
 This is a python implementation of Z80 Assembler. It is not efficient in order
-to make code readable and more fixable. There are following steps:
+to make code readable and more fixable (yeah, nice try).
+There are following steps:
 
 1. Source preparation (finding labels and includes using regexes, replacing strings with anchors, etc.)
 2. Tokenization
@@ -18,10 +19,9 @@ are replaced with square brackets as in NASM. The expressions like `0x100 - $`
 can use `()`.
 
 It has the following shortcomings (which I wish to improve):
-* No relative jump sigend operands support
+* `jr` behaves differently from other assemblers (it directly outputs the argument as operand instead of operand = argument - 2)
 * No `org` directive
 * No `def` directive (known as `equ` in other assemblers)
-* No unary operators in expressions
 * No higher-level abstractions like macros, conditional assembling, etc.
 * No `times` directive (well, there's a similar `ds` so not so much of a problem)
 * `ds` directive has two mandatory arguments (unlike z80asm in which the second one can be omitted)
@@ -30,7 +30,21 @@ But in turn it has a colorful verbose output (if you use `-v` flag)
 
 # Roadmap
 
-* Add relative jump support
 * Add `org` directive
-* Add unary operators
-* Add i8080 mode, mixed mode, strict mode
+* Consider moving treating all numbers as expressions, this would probably make code prettier
+* Maybe add original parentheses mode
+
+# Caveats
+
+In some cases you might think that using expressions is not allowed in some
+cases, e.g.:
+
+```asm
+set 7, [ix + 2*8]
+```
+
+But if you add some parentheses, it works.
+
+```asm
+set 7, [ix + (~(2*8))]
+```
