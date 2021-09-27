@@ -44,7 +44,7 @@ start:
 
 #### Directives and special labels
 
-```
+```asm
 ds 0x66 - $, 0                  ; define space of size 0x66 filled with zeroes
 nmi_handler:
   retn
