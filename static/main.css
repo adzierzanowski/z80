@@ -72,3 +72,13 @@ body {
 .source-panel {
   max-width: 50vw;
 }
+
+#instant-write {
+  border: 1px solid #aaa;
+  width: 100px;
+  height: 50px;
+}
+
+#instant-write:active {
+  border: 1px solid #afa;
+}

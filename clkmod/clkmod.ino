@@ -1,8 +1,23 @@
-#define CLK 52
-#define RST 50
-#define HLT 48
-#define NMI 46
-#define INT 44
+//#define ATMEGA328
+
+#ifdef ATMEGA328
+  #define CLK A5
+  #define RST A4
+  #define HLT A3
+  #define NMI A2
+  #define INT A1
+  #define BAUDRATE 9600
+
+  #include <SoftwareSerial.h>
+  SoftwareSerial Serial1(2,3);
+#else
+  #define CLK 52
+  #define RST 50
+  #define HLT 48
+  #define NMI 46
+  #define INT 44
+  #define BAUDRATE 115200
+#endif
 
 #define DEL 100
 
@@ -21,8 +36,8 @@ void (*delfunc)(int) = delayMicroseconds;
 
 void setup()
 {
-  Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial.begin(BAUDRATE);
+  Serial1.begin(BAUDRATE);
   pinMode(CLK, OUTPUT);
   pinMode(RST, OUTPUT);
   pinMode(HLT, INPUT);

@@ -18,12 +18,20 @@ I hope that in the future this will get more professional.
 # Files
 
 * `z80asm` – Python dual-syntax (i8080, Z80) assembler/disassembler module
-* `clkmod` – Clock emulator
-* `mememu` – RAM emulator
-* `ctl.py` – little GUI for controlling the emulators (ports used are in `.env`)
-* `ctl2.py` – as above but as a Flask app
-* `prog.py` – binary uploader for the RAM emulator
-* `io.s` – an IO library with a fixed address of IO port (`0xaa`) used in emulators
+
+* `busctl/` – Bus controller (and RAM Uploader)
+* `clkmod/` – Clock emulator
+* `fontmaker/` – Little HTML/JS utility for creating fonts
+* `legacy/` – Old unused controllers
+* `lib/` – ASM libraries
+* `schematics/` – KiCAD schematics
+* `static/` and `templates/` – Flask assets
+* `tft` – TFT Display Controller
+
+* `ctl.py` – Flask GUI for the clock emulator
+* `prog.py` – Bus controller RAM programming interface
+* `serialprompt.py` – Bus controller RAM programming interface
+
 
 # Resources
 

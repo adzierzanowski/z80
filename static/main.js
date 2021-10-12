@@ -32,3 +32,24 @@ setInterval(() => {
     output.scroll(0, output.scrollHeight);
   })});
 }, 1000);
+
+document.getElementById('instant-write').addEventListener('keyup', e => {
+  e.preventDefault();
+  console.log(e);
+  if (e.key === 'Enter') {
+    fetch('/ctl?cmd=write&arg=11');
+  } else if (e.key === 'Home') {
+    fetch('/ctl?cmd=write&arg=13');
+  } else if (e.key === 'PageUp') {
+    fetch('/ctl?cmd=write&arg=132');
+  } else if ([37, 38, 39, 40].includes(e.keyCode)) {
+    fetch(`/ctl?cmd=write&arg=${e.keyCode+91}`);
+  } else if ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -_=+~`!@#$%^&*()[]{};:\'"/?.,<>'.includes(e.key)) {
+    e.target.value = e.key;
+    fetch(`/ctl?cmd=write&arg=${e.key === ' ' ? '%20' : e.key}`);
+  } else if (['Control', 'Shift', 'Meta', 'Alt'].includes(e.key)) {
+
+  } else {
+    fetch(`/ctl?cmd=write&arg=${e.keyCode}`);
+  }
+});

@@ -15,6 +15,8 @@
 #define WE 31
 
 #define READY_LED 13
+#define VGA_ADDR 0x76
+#define SERIAL_ADDR 0xaa
 
 #define RAM_SIZE 0x1400
 #define OUTBUF_SIZE 0x400
@@ -84,7 +86,9 @@ void setup()
   digitalWrite(WAIT, LOW);
   digitalWrite(READY_LED, LOW);
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(9600);
+  Serial2.begin(9600);
+
 
   Serial.println(F("memset"));
   memset(ram, 0, RAM_SIZE);
@@ -198,7 +202,7 @@ void loop()
       if (!digitalRead(WE))  {
         uint8_t data = readData();
 
-        if (addr == 0xaa) {
+        if (addr == SERIAL_ADDR) {
           if (data) {
             outbuf[outpos++] = (char) data;
           } else {
@@ -208,8 +212,10 @@ void loop()
         }
 
         while (!digitalRead(WE));
-        if (!outpos && (addr == 0xaa)) {
+        if (!outpos && (addr == SERIAL_ADDR)) {
           Serial1.println(outbuf);
+        } else if (addr == VGA_ADDR) {
+          Serial2.write(data);
         }
       } else if (!digitalRead(OE)) {
         setDataMode(OUTPUT);

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <style>
+      .row {
+        display: flex;
+      }
+
+      #output {
+        font-family: monospace;
+        white-space: pre;
+      }
+      .pix {
+        border: 1px solid black;
+        width: 10px;
+        height: 10px;
+      }
+
+      .pix.on {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="font-table"></div>
+
+    <div id="output"></div>
+
+    <script>
+      const ftable = document.getElementById('font-table');
+
+      for (let y = 0; y < 4; y++) {
+        const row = document.createElement('div');
+              row.setAttribute('class', 'row');
+        row.setAttribute('id', `r${y}`);
+        ftable.appendChild(row);
+
+        for (let x = 0; x < 4; x++) {
+          const pix = document.createElement('div');
+          pix.setAttribute('class', 'pix');
+          pix.setAttribute('id', `r${y}-p${x}`);
+          pix.setAttribute('data-row', y);
+          pix.setAttribute('data-pix', 1 << ((3-x)*2));
+          pix.addEventListener('click', e => {
+            if (e.target.classList.contains('on')) {
+              e.target.classList.remove('on');
+            } else {
+              e.target.classList.add('on');
+            }
+            recalc();
+          })
+          row.appendChild(pix);
+        }
+      }
+
+      const recalc = () => {
+        const out = document.getElementById('output');
+
+        out.innerText = 'const uint8_t ch[] = { ';
+
+        document.querySelectorAll('.row').forEach(r => {
+          console.log(r)
+          let val = 0;
+          r.querySelectorAll('.pix').forEach(p => {
+            if (p.classList.contains('on')) {
+              val |= Number(p.getAttribute('data-pix'));
+            }
+          });
+
+          out.innerText += `0x${val.toString(16)}, `;
+        })
+
+        out.innerText += ' };';
+      }
+      </script>
+
+  </body>
+</html>

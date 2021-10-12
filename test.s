@@ -1,11 +1,13 @@
-jr $+3
-jr 3
-jr $ 
-jr $ - 3
+ld sp, 0xffff
+nop
+jp start
 
-jr $+7
-jr 7
-jr $ 
-jr $ - 7
+ds 0x66 - $
+nmi:
+  retn
+ds 0x100 - $
 
-jp $
+start:
+  db 0xff
+  jp start
+

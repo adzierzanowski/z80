@@ -36,5 +36,28 @@ def upload():
     if b'Done' in buf:
       break
 
+def new_upload():
+  s.write(b'p')
+  time.sleep(1)
+  s.read_all()
+  time.sleep(1)
 
-upload()
+  global data
+  data = b'\x00' + data
+
+  for c in data:
+    b = bytes([c])
+    time.sleep(0.05)
+    s.write(b)
+    q = b'\x100'
+    while not int(c) == int.from_bytes(q, byteorder='little'):
+      print(c,'==?', int.from_bytes(q, byteorder='little'))
+      q = s.read()
+    print('ok', c, '==', int.from_bytes(q, byteorder='little'))
+
+  s.write(b'\xdd\x64')
+
+  time.sleep(1)
+
+
+new_upload()
