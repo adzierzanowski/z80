@@ -1,19 +1,41 @@
 # Zilog Z80 playground
 
-This is a scratchpad repository containing a [an assembler](z80asm) written in
-Python, some utilities to control my Z80 CPU and RAM and clock emulation
-for Arduino Mega. This is until I get a real SRAM chip.
+This is a scratchpad repository containing my Z80 sandbox.
 
-For now the project consists of a main board with Z80 CPU and some LEDs,
-a 5kiB Arduino Mega RAM emulator which can load programs dynamically and
-contains some IO buffers to communicate with the CPU. There's also another
-Arduino Mega which controls the CPU (clock, interrupts, some little parts of IO
-handling).
+## Assembler
+The most interesting for other people is most probably **[an assembler](z80asm)**
+written in Python.
 
 The assembler is more-than-two-pass assembler to make code more readable than
 optimized.
 
 I hope that in the future this will get more professional.
+
+## Z80 Minicomputer
+
+For now the other part of the project consists of:
+
+* a main board with 10 MHz Zilog Z80 CPU and some LEDs,
+* a RAM board with two 62256 SRAM chips, 32 kiB of memory each
+  and 7-segment displays showing data and address bus state,
+* a CLKMOD board acting as a clock and interrupt controller.
+
+Implying the following specs:
+
+```
+- Up to 1 MHZ Z80 CPU (because of bottleneck that is CLKMOD which will
+                       be replaced with a crystal oscillator)
+- 64 kiB SRAM
+- No external non-volatile memory
+- No IO at the moment
+```
+
+At the moment I'm developing the new IO Controller and IO device modules:
+* 128x160 TFT display module,
+* PS/2 keyboard input module.
+
+In the `legacy/` directory there are some IO controller files which I used
+for communicating with the CPU via serial port and low-resolution VGA output.
 
 # Files
 
@@ -30,7 +52,7 @@ I hope that in the future this will get more professional.
 
 * `ctl.py` – Flask GUI for the clock emulator
 * `prog.py` – Bus controller RAM programming interface
-* `serialprompt.py` – Bus controller RAM programming interface
+* `serialprompt.py` – Utility for fast testing of serial communication
 
 
 # Resources
