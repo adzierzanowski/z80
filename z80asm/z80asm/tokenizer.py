@@ -29,7 +29,7 @@ def strip_comments(line):
   return line
 
 
-def resolve_includes(source):
+def resolve_includes(source, include_paths=None):
   includes = re.finditer(INCLUDE_RX, source)
   src = source
   for inc in includes:
@@ -68,7 +68,12 @@ def tokenize(source):
     newline = True
     include = None
 
-    printv(f'{n+1:4}', end=' ')
+    if config.current_include:
+      incline = n - config.current_include.line
+    else:
+      incline = 0
+
+    printv(f'{n+1:4} ', end=' ')
     for word in line:
 
       token = None
@@ -120,12 +125,12 @@ def tokenize(source):
         error(n, 'tokenizer::tokenize', 'Unexpected token:', word)
 
       if token:
-        printv(('     ' if not newline else '') + str(token))
+        printv(('      ' if not newline else '') + f'{token} {config.filename}:{incline:<4}')
         tokens.append(token)
 
       newline = False
 
     linesep = TSeparator(value='\n', line=n)
-    printv(('     ' if not newline else '') + str(linesep))
+    printv(('      ' if not newline else '') + str(linesep))
     tokens.append(linesep)
   return tokens

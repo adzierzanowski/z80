@@ -22,7 +22,7 @@ def mktmp(fname, samefile=False):
     f1 = os.path.join('test', 'test_files', 'py', fname)
 
   if samefile:
-    subprocess.call(('python3', '-m', 'z80asm', '--addr-deref-parentheses', f1, '-o', 'tmp_py'))
+    subprocess.call(('python3', '-m', 'z80asm', '-p', f1, '-o', 'tmp_py'))
   else:
     subprocess.call(('python3', '-m', 'z80asm', f1, '-o', 'tmp_py'))
   subprocess.call(('z80asm', '-I', 'test/test_files/gnu', f2, '-o', 'tmp_z'))
@@ -70,3 +70,6 @@ class TestAgainstGNU(TestCase):
 
   def test_relative_jumps(self):
     self._test_file('reljmp.s')
+
+  def test_origin_directive(self):
+    self._test_file('org.s')

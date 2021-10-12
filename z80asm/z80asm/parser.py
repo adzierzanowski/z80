@@ -104,6 +104,7 @@ def parse_expressions(tokens):
           ptokens += omitted
         etoken = None
         omitted = []
+      ixiy = False
 
     elif isinstance(token, TMemClose):
       if etoken is None:

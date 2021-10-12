@@ -147,6 +147,7 @@ def assemble(tokens, lblpos):
 
   bytecode = []
   defer = []
+  otoken = None
 
   for i, token in enumerate(tokens):
     printv(f'{i+1:4} {token.line+1:4} @{len(bytecode):04x}', token, end=' ')

@@ -115,6 +115,7 @@ But in turn it has a colorful verbose output (if you use `-v` flag)
 # Roadmap
 
 * Add `org` directive
+* Add `def/equ` directive
+* Add `incbin` directive
 * Consider treating all numbers as expressions, this would probably make code prettier
-* Maybe add original parentheses mode (**in progress**)
-* Handle escape codes in string literals
+* Handle escape sequences in string literals

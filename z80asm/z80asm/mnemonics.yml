@@ -502,7 +502,7 @@ z80:
     opcode: 0xf0
   - schema: pop af
     opcode: 0xf1
-  - schema: jp p, imm8
+  - schema: jp p, imm16
     opcode: 0xf2
   - schema: di
     opcode: 0xf3
@@ -701,13 +701,13 @@ z80:
     opcode: [0xed, 0xa3]
 
   - schema: ldd
-    opcode: [0xed, 0x78]
+    opcode: [0xed, 0xa8]
   - schema: cpd
-    opcode: [0xed, 0x79]
+    opcode: [0xed, 0xa9]
   - schema: ind
-    opcode: [0xed, 0x7a]
+    opcode: [0xed, 0xaa]
   - schema: outd
-    opcode: [0xed, 0x7b]
+    opcode: [0xed, 0xab]
 
   - schema: ldir
     opcode: [0xed, 0x80]

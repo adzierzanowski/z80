@@ -35,3 +35,6 @@ class TestGNUSyntaxMode(TestCase):
 
   def test_relative_jumps(self):
     self._test_file('reljmp.s')
+
+  def test_origin_directive(self):
+    self._test_file('org.s')

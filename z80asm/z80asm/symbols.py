@@ -78,7 +78,7 @@ Z80_REGISTER_NAMES = (
 )
 
 Z80_FLAG_NAMES = (
-  'z', 'nz', 'pe', 'po', 'm', 'c', 'nc'
+  'z', 'nz', 'pe', 'po', 'm', 'c', 'nc', 'p'
 )
 
 I8080_MNEMONICS = [Mnemonic.from_yaml(m) for m in data['i8080']]

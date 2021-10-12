@@ -40,7 +40,6 @@ def disassemble(bytecode):
     except IndexError:
       nomore = True
 
-
     if skip and not nomore:
       skip = False
       skipped_byte = b
@@ -68,9 +67,9 @@ def disassemble(bytecode):
           opcode_bytes, deferred = opcode_bytes[:2], opcode_bytes[-1]
           defer_opcode = False
 
-        opcodefmt = a.BLUE + ' '.join([f'{byte:08b}' for byte in opcode_bytes]) + a.E
-        deferredfmt = (a.BLUE + f'{deferred:08b}' + a.E) if deferred is not None else ''
-        operandfmt = a.CYAN + ' '.join([f'{byte:08b}' for byte in operands]) + a.E + ' ' + deferredfmt
+        opcodefmt = a.BLUE + ' '.join([f'{byte:08b}/{byte:02x}' for byte in opcode_bytes]) + a.E
+        deferredfmt = (a.BLUE + f'{deferred:08b}/{deferred:02x}' + a.E) if deferred is not None else ''
+        operandfmt = a.CYAN + ' '.join([f'{byte:08b}/{byte:02x}' for byte in operands]) + a.E + ' ' + deferredfmt
         opcodechars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in opcode_bytes]) + a.E
         operandchars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in operands]) + a.E
 
@@ -91,6 +90,7 @@ def disassemble(bytecode):
           continue
 
       matches = [m for m in matches if m.opcode[opos] == b]
+
 
       if len(matches) == 1:
         match = matches[0]
