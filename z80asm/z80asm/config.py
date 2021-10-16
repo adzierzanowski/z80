@@ -1,6 +1,9 @@
-cpu = 'z80'
-current_include = None
-filename = 'unknown'
-original_parentheses = False
-undocumented = True
-verbose = False
+cpu = 'z80' # cpu model
+current_include = None # TODO: probably can be removed
+filename = 'unknown' # root source filename
+include_paths = ['.']
+original_parentheses = False # use () instead of [] for memory dereference
+origin = 0 # default origin of addresses
+silly = False # all message
+undocumented = True # use undocumented instructions
+verbose = [] # verbose sections

@@ -18,8 +18,8 @@ else:
 
 
 def parse_expressions(tokens):
-  printv(f'{a.GREEN}Parse expressions{a.E}')
-  printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
+  printv(f'{a.GREEN}Parse expressions{a.E}', section='parser expr')
+  printv(f'{a.CYAN}{"#":>4} {"File":>20} Line Token{a.E}', section='parser expr')
   ptokens = []
 
   etoken = None
@@ -34,7 +34,7 @@ def parse_expressions(tokens):
 
     elif any([isinstance(token, T) for T in (TNumber, TLabelRef, THere)]):
       if etoken is None:
-        etoken = TExpression('expr', rpn=[token], line=token.line)
+        etoken = TExpression('expr', token.fname, rpn=[token], line=token.line)
       else:
         etoken.rpn.append(token)
       omitted.append(token)
@@ -51,10 +51,13 @@ def parse_expressions(tokens):
     elif isinstance(token, TOperator):
       if etoken is None:
         if token.unary:
-          etoken = TExpression('expr', opstack=[token], line=token.line)
+          etoken = TExpression(
+            'expr', token.fname, opstack=[token], line=token.line)
           omitted.append(token)
         elif not ixiy:
-          error(token.line, 'parser::parse_expressions', 'Unexpected operator:', token)
+          error(
+            token.line, 'parser::parse_expressions', token.fname,
+            'Unexpected operator:', token)
         else:
           ptokens.append(token)
       else:
@@ -87,7 +90,9 @@ def parse_expressions(tokens):
 
         omitted.append(token)
       else:
-        error(token.line, 'parser::parse_expressions', 'Unexpected closing parenthesis:', token)
+        error(
+          token.line, 'parser::parse_expressions', token.fname,
+          'Unexpected closing parenthesis:', token)
 
     elif isinstance(token, TSeparator):
       if etoken is None:
@@ -122,7 +127,9 @@ def parse_expressions(tokens):
     else:
       if etoken:
         if etoken.valid():
-          error(token.line, 'parser::parse_expressions', 'WTF', etoken)
+          error(
+            token.line, 'parser::parse_expressions', token.fname,
+            'WTF', etoken)
         else:
           ptokens += omitted
           etoken = None
@@ -132,9 +139,15 @@ def parse_expressions(tokens):
 
   for i, pt in enumerate(ptokens):
     try:
-      printv(f'{i+1:4}', f'{pt.line+1:4}', pt, pt.rpnfmt if isinstance(pt, TExpression) else '')
+      printv(
+        f'{i+1:4}',
+        f'{a.GREEN}{pt.fname:>20}{a.E}:{a.CYAN}{pt.line+1:<4}{a.E}',
+        pt,
+        pt.rpnfmt if isinstance(pt, TExpression) else '',
+        section='parser expr')
     except TypeError:
-      printv(pt)
+      printv(pt, section='parser expr')
+  printv(section='parser expr')
 
   return ptokens
 
@@ -145,8 +158,9 @@ def parse_opcodes(tokens):
       if (len(m.schema) > spos) and predicate(m.schema[spos])
     ]
 
-  printv(f'{a.GREEN}Parse opcodes{a.E}')
-  printv(f'{a.CYAN}{"#":>4} Line Token{a.E}')
+  printv(f'{a.GREEN}Parse opcodes{a.E}', section='parser opcode')
+  printv(
+    f'{a.CYAN}{"#":>4} {"File":>20} Line Token{a.E}', section='parser opcode')
 
   ptokens = []
 
@@ -155,14 +169,19 @@ def parse_opcodes(tokens):
   spos = 0 # schema index
 
   for i, token in enumerate(tokens):
-    printv(f'{i+1:4} {token.line+1:4}', token)
+    printv(
+      f'{i+1:4} {a.GREEN}{token.fname:>20}{a.E}:{a.CYAN}{token.line+1:<4}{a.E}',
+      token,
+      section='parser opcode')
 
     if isinstance(token, TDirective):
       if token.value == 'include':
         token.chfile()
     elif isinstance(token, TMnemonic):
       if mtoken:
-        error(token.line, 'parser::parse_opcodes', 'Expected a new line:', token)
+        error(
+          token.line, 'parser::parse_opcodes', token.fname,
+          'Expected a new line:', token)
       else:
         mtoken = token
         matches = match(MNEMONICS, spos, lambda s: s == token.value)
@@ -196,7 +215,7 @@ def parse_opcodes(tokens):
         if mtoken:
           if matches:
             if len(matches) == 1:
-              otoken = TOpcode(matches[0], line=mtoken.line)
+              otoken = TOpcode(matches[0], token.fname, line=mtoken.line)
               ptokens.append(otoken)
               if mtoken.operands:
                 ptokens += mtoken.operands
@@ -206,7 +225,7 @@ def parse_opcodes(tokens):
               exact = [m for m in matches if len(m.schema) == spos]
               if len(exact) == 1:
                 emnem = exact[0]
-                otoken = TOpcode(emnem, line=mtoken.line)
+                otoken = TOpcode(emnem, token.fname, line=mtoken.line)
                 ptokens.append(otoken)
                 if mtoken.operands:
                   operands_count = emnem.schema.count('imm8') + emnem.schema.count('imm16') * 2
@@ -214,13 +233,17 @@ def parse_opcodes(tokens):
                 mtoken = None
                 spos = 0
               else:
-                error(mtoken.line, 'parser::parse_opcodes', 'Ambiguous mnemonic:', mtoken, quit=False)
+                error(
+                  mtoken.line, 'parser::parse_opcodes', mtoken.fname,
+                  'Ambiguous mnemonic:', mtoken, quit=False)
                 print('Did you mean one of the following?', file=sys.stderr)
                 for match in matches:
                   print('   ', match, file=sys.stderr)
                 sys.exit(1)
           else:
-            error(mtoken.line, 'parser::parse_opcodes', 'No matches for mnemonic:', mtoken)
+            error(
+              mtoken.line, 'parser::parse_opcodes', mtoken.fname,
+              'No matches for mnemonic:', mtoken)
       elif token.value == ',':
         pass
 
@@ -229,5 +252,7 @@ def parse_opcodes(tokens):
         spos += 1
     else:
       ptokens.append(token)
+
+  printv(section='parser opcode')
 
   return ptokens

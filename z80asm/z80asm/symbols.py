@@ -56,7 +56,8 @@ DIRECTIVES = (
   'dw',
   'ds',
   'times',
-  'def'
+  'def',
+  'once'
 )
 
 OPERATORS = ('~', '|', '^', '&', '<<', '>>', '+', '-', '*', '/', '%')

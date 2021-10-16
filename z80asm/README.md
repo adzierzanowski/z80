@@ -23,6 +23,9 @@ $ python3 -m z80asm input.s -o output.bin # see --help for more
 
 Unlike other Z80 assemblers, to use memory pointers you need to use square
 brackets instead of parentheses (parentheses are reserved for expressions).
+This can be overriden with `--parentheses` flag, however this might possibly
+break some numerical expression parsing although I haven't noticed such errors.
+
 Commas are largely optional.
 
 ```asm
@@ -45,7 +48,12 @@ start:
 #### Directives and special labels
 
 ```asm
-ds 0x66 - $, 0                  ; define space of size 0x66 filled with zeroes
+once                            ; include this file at most one time
+
+org 0x100                       ; add 0x100 to position references such as labels
+def NMI_HANDLER_OFFSET 0x66     ; define custom symbol
+
+ds NMI_HANDLER_OFFSET - $, 0    ; define space of size 0x66 filled with zeroes
 nmi_handler:
   retn
 
@@ -105,8 +113,6 @@ are replaced with square brackets as in NASM. The expressions like `0x100 - $`
 can use `()`.
 
 It has the following shortcomings (which I wish to improve):
-* No `org` directive
-* No `def` directive (known as `equ` in other assemblers)
 * No `times` directive (well, there's a similar `ds` so not so much of a problem)
 * No higher-level abstractions like macros, conditional assembling, etc.
 
@@ -114,8 +120,7 @@ But in turn it has a colorful verbose output (if you use `-v` flag)
 
 # Roadmap
 
-* Add `org` directive
-* Add `def/equ` directive
 * Add `incbin` directive
 * Consider treating all numbers as expressions, this would probably make code prettier
 * Handle escape sequences in string literals
+* Handle `$` token in `def`s

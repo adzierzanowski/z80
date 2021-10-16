@@ -23,11 +23,12 @@ class Token:
   SEPARATOR = 'SEP'
   STRING = 'STR'
 
-  def __init__(self, type, value, line=0):
+  def __init__(self, type, value, fname, line=0):
     self.type = type
     self.value = value
     self.line = line
     self.size = None
+    self.fname = fname
 
   def __str__(self):
     val = self.value
@@ -47,8 +48,8 @@ class Token:
     return str(self)
 
 class TDirective(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.DIRECTIVE, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.DIRECTIVE, value, fname, line=line)
     self.args = {}
 
   def chfile(self):
@@ -58,15 +59,16 @@ class TDirective(Token):
       config.current_include = self
 
 class TExpression(Token):
-  def __init__(self, value, rpn=None, opstack=None, line=None):
-    super().__init__(Token.EXPRESSION, value, line=line)
+  def __init__(self, value, fname, rpn=None, opstack=None, line=None):
+    super().__init__(Token.EXPRESSION, value, fname, line=line)
     self.rpn = rpn if rpn else []
     self.opstack = opstack if opstack else []
 
   def valid(self):
-    return self.rpn and not self.opstack and any((isinstance(t, TOperator) for t in self.rpn))
+    return self.rpn and not self.opstack and any(
+      (isinstance(t, TOperator) for t in self.rpn))
 
-  def evaluate(self, here=None, lblpos=None):
+  def evaluate(self, here=None, lblpos=None, origin=config.origin):
     lblpos = lblpos if lblpos else {}
     rpn = self.rpn[::-1]
     val = []
@@ -76,14 +78,18 @@ class TExpression(Token):
         val.append(tok.value)
       elif isinstance(tok, THere):
         if here is not None:
-          val.append(here)
+          val.append(here + origin)
         else:
-          error(self.line, 'TExpression::evaluate', 'Can\'t evaluate current position:', self)
+          error(
+            self.line, 'TExpression::evaluate',
+            self.fname, 'Can\'t evaluate current position:', self)
       elif isinstance(tok, TLabelRef):
         if (lpos := lblpos.get(tok.value)) is not None:
-          val.append(lpos)
+          val.append(lpos+origin)
         else:
-          error(self.line, 'TExpression::evaluate', 'Can\'t evaluate label position:', tok)
+          error(
+            self.line, 'TExpression::evaluate', self.fname,
+            'Can\'t evaluate label position:', tok)
       elif isinstance(tok, TOperator):
         if tok.unary:
           a = val.pop()
@@ -126,58 +132,58 @@ class TExpression(Token):
     return '[' + ' '.join([(a.ORANGE if isinstance(t, TOperator) and t.unary else '') + str(t.value) + a.E for t in self.rpn]) + ']'
 
 class TExprClose(Token):
-  def __init__(self, line=None):
-    super().__init__(Token.EXPR_CLOSE, ')', line=line)
+  def __init__(self, fname, line=None):
+    super().__init__(Token.EXPR_CLOSE, ')', fname, line=line)
 
 class TExprOpen(Token):
-  def __init__(self, line=None):
-    super().__init__(Token.EXPR_OPEN, '(', line=line)
+  def __init__(self, fname, line=None):
+    super().__init__(Token.EXPR_OPEN, '(', fname, line=line)
 
 class TFlag(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.FLAG, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.FLAG, value, fname, line=line)
 
 class THere(Token):
-  def __init__(self, line=None):
-    super().__init__(Token.HERE, '$', line=line)
+  def __init__(self, fname, line=None):
+    super().__init__(Token.HERE, '$', fname, line=line)
     self.position = None
 
 class TLabel(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.LABEL, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.LABEL, value, fname, line=line)
 
 class TLabelRef(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.LABEL_REF, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.LABEL_REF, value, fname, line=line)
 
 class TMemClose(Token):
-  def __init__(self, line=None):
-    super().__init__(Token.MEM_CLOSE, ']', line=line)
+  def __init__(self, fname, line=None):
+    super().__init__(Token.MEM_CLOSE, ']', fname, line=line)
 
 class TMemOpen(Token):
-  def __init__(self, line=None):
-    super().__init__(Token.MEM_OPEN, '[', line=line)
+  def __init__(self, fname, line=None):
+    super().__init__(Token.MEM_OPEN, '[', fname, line=line)
 
 class TMnemonic(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.MNEMONIC, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.MNEMONIC, value, fname, line=line)
     self.operands = []
 
 class TNumber(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.NUMBER, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.NUMBER, value, fname, line=line)
 
 class TOpcode(Token):
-  def __init__(self, mnemonic, line=None):
-    super().__init__(Token.OPCODE, str(mnemonic), line=line)
+  def __init__(self, mnemonic, fname, line=None):
+    super().__init__(Token.OPCODE, str(mnemonic), fname, line=line)
     self.mnemonic = mnemonic
 
     # Special case for opcodes in form DD CB <OPERAND> 30
     self.reverse_operand = (len(self.mnemonic.opcode) == 3) and (self.mnemonic.opcode[1] == 0xcb)
 
 class TOperator(Token):
-  def __init__(self, value, unary=False, line=None):
-    super().__init__(Token.OPERATOR, value, line=line)
+  def __init__(self, value, fname, unary=False, line=None):
+    super().__init__(Token.OPERATOR, value, fname, line=line)
     self.unary = unary or value == '~'
     self.precedence = {
       '~': 1,
@@ -201,16 +207,16 @@ class TOperator(Token):
     return smaller_precedence or (same_precedence and left_assoc)
 
 class TRegister(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.REGISTER, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.REGISTER, value, fname, line=line)
 
 class TSeparator(Token):
-  def __init__(self, value=',', line=None):
-    super().__init__(Token.SEPARATOR, value, line=line)
+  def __init__(self, fname, value=',', line=None):
+    super().__init__(Token.SEPARATOR, value, fname, line=line)
 
 class TString(Token):
-  def __init__(self, value, line=None):
-    super().__init__(Token.STRING, value, line=line)
+  def __init__(self, value, fname, line=None):
+    super().__init__(Token.STRING, value, fname, line=line)
 
     for symbol in tuple('[](),') + tuple(OPERATORS):
       self.value = self.value.replace(f' {symbol} ', f'{symbol}')

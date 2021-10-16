@@ -17,8 +17,10 @@ def emitval(val, size):
   return [(val >> (8 * i)) & 0xff for i in range(size)]
 
 def evaluate_size(tokens):
-  printv(f'{a.GREEN}Evaluate size and positions{a.E}')
-  printv(f'{a.CYAN}{"#":>4} Line {"Pos":5} Token{a.E}')
+  printv(f'{a.GREEN}Evaluate size and positions{a.E}', section='asm szeval')
+  printv(
+    f'{a.CYAN}{"#":>4} {"File":>20} Line {"Pos":5} Token{a.E}',
+    section='asm szeval')
 
   ptokens = []
 
@@ -29,9 +31,15 @@ def evaluate_size(tokens):
   directive = None
   pos = 0
   noemit = False
+  origin = config.origin
   for i, token in enumerate(tokens):
     size = 0
-    printv(f'{i+1:4} {token.line+1:4}', f'@{pos:04x}', token, end=' ')
+    printv(
+      f'{i+1:4} {a.GREEN}{token.fname:>20}{a.E}:{a.CYAN}{token.line+1:<4}{a.E}',
+      f'@{pos:04x}',
+      token,
+      end=' ',
+      section='asm szeval')
 
     if isinstance(token, TOpcode):
       size = len(token.mnemonic.opcode)
@@ -43,7 +51,6 @@ def evaluate_size(tokens):
         nextsize = 2
       else:
         nextsize = 0
-
 
     elif isinstance(token, TLabelRef):
       if nextsize:
@@ -71,18 +78,23 @@ def evaluate_size(tokens):
           size = 1
         elif directive.value == 'dw':
           size = 2
+        elif directive.value == 'org':
+          directive.args['origin'] = token.value
+          origin = token.value
       elif nextsize:
         size = nextsize
         nextsize = nextnextsize
         nextnextsize = 0
       else:
-        warning(token.line, 'assembler::evaluate_size', 'Unexpected number (ignored):', token)
+        warning(
+          token.line, 'assembler::evaluate_size', token.fname,
+          'Unexpected number (ignored):', token)
 
     elif isinstance(token, TExpression):
       if directive:
         if directive.value == 'ds':
           noemit = True
-          val = token.evaluate(here=pos, lblpos=lblpos)
+          val = token.evaluate(here=pos, lblpos=lblpos, origin=origin)
           if not directive.args.get('size'):
             directive.args['size'] = val
             size = val
@@ -94,7 +106,9 @@ def evaluate_size(tokens):
         token.size = nextsize
         size = nextsize
       else:
-        warning(token.line, 'assembler::evaluate_size', 'Unexpected expression (ignored):', token)
+        warning(
+          token.line, 'assembler::evaluate_size', token.fname,
+          'Unexpected expression (ignored):', token)
 
     elif isinstance(token, THere):
       if nextsize:
@@ -103,8 +117,8 @@ def evaluate_size(tokens):
       nextsize = 0
 
     elif isinstance(token, TLabel):
-      lblpos[token.value] = pos
-      printv(f'{a.CYAN}@{a.E}x{pos:x}', end=' ')
+      lblpos[token.value] = pos + config.origin
+      printv(f'{a.CYAN}@{a.E}x{pos:x}', end=' ', section='asm szeval')
 
     elif isinstance(token, TSeparator):
       noemit = True
@@ -124,33 +138,48 @@ def evaluate_size(tokens):
 
         if nextsize == 1:
           if len(tokval) > 1:
-            warning(token.line, 'assembler::evaluate_size', 'String value has been truncated to a single character:', token.value, '->', val)
+            warning(
+              token.line, 'assembler::evaluate_size', token.fname,
+              'String value has been truncated to a single character:',
+              token.value, '->', val)
         elif nextsize == 2:
           if len(tokval) > 2:
-            warning(token.line, 'assembler::evaluate_size', 'String value has been truncated to first two characters:', token.value, '->', val)
+            warning(
+              token.line, 'assembler::evaluate_size', token.fname,
+              'String value has been truncated to first two characters:',
+              token.value, '->', val)
         size = nextsize
 
     lastsize = size
     token.size = size
     pos += size
-    printv(token.size if token.size else '')
+    printv(token.size if token.size else '', section='asm szeval')
 
     if not noemit:
       ptokens.append(token)
     noemit = False
 
+  printv(section='asm szeval')
+
   return ptokens, lblpos
 
 def assemble(tokens, lblpos):
-  printv(f'{a.GREEN}Assemble{a.E}')
-  printv(f'{a.CYAN}{"#":>4} Line {"Pos":5} Token{a.E}')
+  printv(f'{a.GREEN}Assemble{a.E}', section='asm emit')
+  printv(
+    f'{a.CYAN}{"#":>4} {"File":>20} Line {"Pos":5} Token{a.E}',
+    section='asm emit')
 
   bytecode = []
   defer = []
   otoken = None
+  origin = config.origin
 
   for i, token in enumerate(tokens):
-    printv(f'{i+1:4} {token.line+1:4} @{len(bytecode):04x}', token, end=' ')
+    printv(
+      f'{i+1:4} {a.GREEN}{token.fname:>20}{a.E}:{a.CYAN}{token.line+1:<4}{a.E} @{len(bytecode):04x}',
+      token,
+      end=' ',
+      section='asm emit')
 
     emit = defer
     defer = []
@@ -165,11 +194,13 @@ def assemble(tokens, lblpos):
         emit += [fill] * size
       elif token.value == 'include':
         token.chfile()
+      elif token.value == 'org':
+        origin = token.args['origin']
 
     elif isinstance(token, TExpression):
       posoffset = len(otoken.mnemonic.opcode) if otoken else 0
       here = len(bytecode) - posoffset
-      val = token.evaluate(here=len(bytecode)-posoffset, lblpos=lblpos)
+      val = token.evaluate(here=here, lblpos=lblpos, origin=origin)
       if otoken and otoken.mnemonic.relative:
         dest = val
         reljmp = dest - (here + 2)
@@ -178,7 +209,9 @@ def assemble(tokens, lblpos):
         if reljmp in range(-128, 128):
           val_ = reljmp & 0xff
         else:
-          error(token.line, 'assembler::assemble', 'Relative jump not in range[-128,127]:', token, f'reljmp={val}')
+          error(
+            token.line, 'assembler::assemble', token.fname,
+            'Relative jump not in range[-128,127]:', token, f'reljmp={val}')
       else:
         if token.size == 1:
           val_ = val & 0xff
@@ -186,13 +219,16 @@ def assemble(tokens, lblpos):
           val_ = val & 0xffff
 
         if val_ != val:
-          warning(token.line, 'assembler::assemble', 'Expression value has been truncated:', val, '->', val_, token.rpnfmt)
+          warning(
+            token.line, 'assembler::assemble', token.fname,
+            'Expression value has been truncated:',
+            val, '->', val_, token.rpnfmt)
 
       emit = emitval(val_, token.size) + emit
       otoken = None
 
     elif isinstance(token, THere):
-      val = len(bytecode)
+      val = len(bytecode) + origin
       if otoken:
         val -= len(otoken.mnemonic.opcode)
         if otoken.mnemonic.relative:
@@ -205,7 +241,10 @@ def assemble(tokens, lblpos):
             val_ = val & 0xffff
 
         if val_ != val:
-          warning(token.line, 'assembler::assemble', 'Current position value has been truncated:', val, '->', val_)
+          warning(
+            token.line, 'assembler::assemble', token.fname,
+            'Current position value has been truncated:',
+            val, '->', val_)
 
       emit = emitval(val_, token.size) + emit
       otoken = None
@@ -217,9 +256,12 @@ def assemble(tokens, lblpos):
         if reljmp in range(-128, 128):
           emit = [reljmp & 0xff]
         else:
-          error(token.line, 'assembler::assemble', 'relative jump out of range[-128,127]:', token, f'reljmp={reljmp}')
+          error(
+            token.line, 'assembler::assemble', token.fname,
+            'relative jump out of range[-128,127]:',
+            token, f'reljmp={reljmp}')
       else:
-        emit = emitval(lblpos[token.value], token.size) + emit
+        emit = emitval(lblpos[token.value] + origin, token.size) + emit
 
     elif isinstance(token, TNumber):
       if otoken and otoken.mnemonic.relative:
@@ -228,7 +270,10 @@ def assemble(tokens, lblpos):
         if reljmp in range(-128, 128):
           emit = [reljmp & 0xff]
         else:
-          error(token.line, 'assembler::assemble', 'relative jump out of range[-128,127]:', token, f'reljmp={reljmp}')
+          error(
+            token.line, 'assembler::assemble', token.fname,
+            'relative jump out of range[-128,127]:',
+            token, f'reljmp={reljmp}')
       else:
         emit = emitval(token.value, token.size) + emit
 
@@ -245,6 +290,7 @@ def assemble(tokens, lblpos):
       emit = sum([emitval(b, 1) for b in strbytes], []) + emit
 
     bytecode += emit
-    printv(bytearr_fmt(emit, rle=True))
+    printv(bytearr_fmt(emit, rle=True), section='asm emit')
+  printv(section='asm emit')
 
   return bytecode

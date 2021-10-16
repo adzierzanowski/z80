@@ -4,18 +4,22 @@ from . import ansi as a
 from . import config
 
 
-def error(line, func, *msg, quit=True):
+def error(line, func, fname, *msg, quit=True):
   if config.current_include:
     line -= config.current_include.line
-  print(f'{a.RED}{config.filename}:{line+1}: error:{a.E} {a.YELLOW}{func}{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
+  print(
+    f'{a.RED}{fname}:{line+1}: error:{a.E} {a.YELLOW}{func}{a.E} {" ".join([str(m) for m in msg])}',
+    file=sys.stderr)
   if quit:
     sys.exit(1)
 
-def warning(line, func, *msg):
-  print(f'{a.YELLOW}{config.filename}:{line+1} warning:{a.E} {a.ORANGE}{func}{a.E} {" ".join([str(m) for m in msg])}', file=sys.stderr)
+def warning(line, func, fname, *msg):
+  print(
+    f'{a.YELLOW}{fname}:{line+1} warning:{a.E} {a.ORANGE}{func}{a.E} {" ".join([str(m) for m in msg])}',
+    file=sys.stderr)
 
-def printv(*args, **kwargs):
-  if config.verbose:
+def printv(*args, section=None, **kwargs):
+  if config.silly or any([s in config.verbose for s in section.split(' ')]):
     print(*args, **kwargs)
 
 def parsenum(word):

@@ -6,7 +6,7 @@ with open('README.md', 'r') as f:
 
 setup(
   name='z80asm',
-  version='0.1.0',
+  version='0.5.0',
   description='Zilog Z80 assembler and disassembler',
   long_description=long_description,
   long_description_content_type='text/markdown',
