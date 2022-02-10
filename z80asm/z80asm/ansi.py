@@ -1,4 +1,5 @@
 E = '\x1b[0m'
+B = '\x1b[1m'
 RED = '\x1b[38;5;1m'
 GREEN = '\x1b[38;5;2m'
 YELLOW = '\x1b[38;5;3m'

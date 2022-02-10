@@ -2,6 +2,7 @@ cpu = 'z80' # cpu model
 current_include = None # TODO: probably can be removed
 filename = 'unknown' # root source filename
 include_paths = ['.']
+once = False
 original_parentheses = False # use () instead of [] for memory dereference
 origin = 0 # default origin of addresses
 silly = False # all message

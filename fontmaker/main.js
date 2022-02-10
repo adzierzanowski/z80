@@ -25,6 +25,7 @@ function pad(str, char, len) {
 
 function recalculate() {
   const charWidth = Number(document.getElementById('width').value);
+  const reverseBits = document.getElementById('reverse-bits').checked;
 
   let output = '<span class="keyword">const</span> ';
   output += '<span class="type">uint8_t</span> font';
@@ -41,7 +42,11 @@ function recalculate() {
 
       row.querySelectorAll('.pix').forEach((pix, i) => {
         if (pix.classList.contains('on')) {
-          val |= (1 << (charWidth - i - 1))
+          if (reverseBits) {
+            val |= (1 << (charWidth - i - 1))
+          } else {
+            val |= (1 << (i))
+          }
         }
       });
 
@@ -109,6 +114,8 @@ function createFontTable() {
         pixDiv.setAttribute('class', 'pix');
         pixDiv.setAttribute('data-char', String.fromCharCode(i));
         pixDiv.setAttribute('data-ord', i);
+        pixDiv.setAttribute('data-x', x);
+        pixDiv.setAttribute('data-y', y);
 
         rowDiv.appendChild(pixDiv);
       }

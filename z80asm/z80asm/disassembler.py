@@ -67,9 +67,9 @@ def disassemble(bytecode):
           opcode_bytes, deferred = opcode_bytes[:2], opcode_bytes[-1]
           defer_opcode = False
 
-        opcodefmt = a.BLUE + ' '.join([f'{byte:08b}/{byte:02x}' for byte in opcode_bytes]) + a.E
-        deferredfmt = (a.BLUE + f'{deferred:08b}/{deferred:02x}' + a.E) if deferred is not None else ''
-        operandfmt = a.CYAN + ' '.join([f'{byte:08b}/{byte:02x}' for byte in operands]) + a.E + ' ' + deferredfmt
+        opcodefmt = a.BLUE + ' '.join([f'{byte:08b} {a.ORANGE+a.B}{byte:02x}{a.E+a.BLUE} ' for byte in opcode_bytes]) + a.E
+        deferredfmt = (a.BLUE + f'{deferred:08b} {a.ORANGE+a.B}{deferred:02x}{a.E+a.BLUE} ' + a.E) if deferred is not None else ''
+        operandfmt = a.CYAN + ' '.join([f'{byte:08b} {a.ORANGE+a.B}{byte:02x}{a.E+a.CYAN} ' for byte in operands]) + a.E + ' ' + deferredfmt
         opcodechars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in opcode_bytes]) + a.E
         operandchars = a.BLUE + ' '.join([chr(byte) if chr(byte).isprintable() else '.' for byte in operands]) + a.E
 

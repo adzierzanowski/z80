@@ -1,0 +1,176 @@
+body {
+  background-color: #282828;
+  font-family: 'Jetbrains Mono', monospace;
+  color: #eee;
+}
+
+#content {
+  padding: 50px;
+}
+
+.segdisp-wrapper {
+  display: flex;
+  transform: scale(0.5);
+  transform-origin: left top;
+}
+
+.segdisp {
+  background-color: black;
+  width: 60px;
+  height: 90px;
+  position: relative;
+}
+
+.segdisp__segment {
+  background-color: #400000;
+  position: absolute;
+  width: 32px;
+  height: 5px;
+  border-radius: 2px;
+}
+
+.segdisp__segment--7 { top: 80px; left: 48px; width: 5px; }
+.segdisp__segment--6 { top: 5px; left: 11px; }
+.segdisp__segment--5 { top: 14px; left: 42px; width: 5px; height: 24px; }
+.segdisp__segment--4 { top: 44px; left: 42px; width: 5px; height: 24px; }
+.segdisp__segment--3 { top: 72px; left: 11px; }
+.segdisp__segment--2 { top: 44px; left: 6px; width: 5px; height: 24px; }
+.segdisp__segment--1 { top: 14px; left: 6px; width: 5px; height: 24px; }
+.segdisp__segment--0 { top: 39px; left: 15px; width: 23px; }
+
+.segdisp__segment.on {
+  background-color: #e00;
+  box-shadow: 1px 1px 20px #f00, 1px 1px 40px #f00;
+}
+
+#data-segdisp-wrapper .segdisp__segment {
+  background-color: #004000;
+}
+
+#data-segdisp-wrapper .segdisp__segment.on {
+  background-color: #0e0;
+  box-shadow: 1px 1px 20px #0f0, 1px 1px 40px #0f0;
+}
+
+.led-display__led {
+  background-color: #754C00;
+  width: 5px;
+  height: 10px;
+}
+
+.led-display__led.on {
+  background-color: #ffa500;
+  box-shadow: 1px 1px 10px #ffa500, 1px 1px 20px #ffc55c;
+}
+
+.led-display__wrapper {
+  display: flex;
+  gap: 2px;
+  justify-content: space-between;
+}
+
+#address-leddisp-wrapper {
+  max-width: 200px;
+  padding: 10px;
+}
+
+#address-leddisp-wrapper .led-display__led {
+  background-color: #400000;
+}
+
+#address-leddisp-wrapper .led-display__led.on {
+  background-color: #e00;
+  box-shadow: 1px 1px 10px #f00, 1px 1px 20px #f00;
+}
+
+#data-leddisp-wrapper {
+  max-width: 200px;
+  padding: 10px;
+}
+
+#data-leddisp-wrapper .led-display__led {
+  background-color: #004000;
+}
+
+#data-leddisp-wrapper .led-display__led.on {
+  background-color: #0e0;
+  box-shadow: 1px 1px 10px #0f0, 1px 1px 20px #0f0;
+}
+
+#bus-panel {
+  display: flex;
+}
+
+#cpu-wrapper {
+  padding: 100px;
+}
+
+.z80-display__package {
+  background-color: #000;
+  width: 400px;
+  height: 100px;
+  border-radius: 2px;
+  position: relative;
+  color: #fff;
+  font-family: 'Jetbrains Mono', monospace;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.z80-display__bottom-pins, .z80-display__top-pins {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  width: 380px;
+  top: 100px;
+  left: 10px;
+}
+
+.z80-display__top-pins {
+  top: -20px;
+}
+
+.z80-display__pin {
+  background-color: #aaa;
+  width: 5px;
+  height: 20px;
+  color: #fff;
+  font-family: 'Jetbrains Mono', monospace;
+  font-size: 10px;
+  position: relative;
+}
+
+.z80-display__top-pins .z80-display__pin--name-wrapper {
+  transform: rotate(-45deg);
+  position: absolute;
+  top: -10px;
+  left: -2px;
+  transform-origin: left top;
+}
+
+.z80-display__bottom-pins .z80-display__pin--name-wrapper {
+  transform: rotate(45deg);
+  transform-origin: left top;
+  position: absolute;
+  top: 22px;
+  left: 2px;
+}
+
+.z80-display__pin.on {
+  background-color: #d00;
+  color: #d00;
+}
+
+#cpu-wrapper .z80-display__wrapper {
+  transform: scale(1.2);
+}
+
+#address-label {
+  color: #f00;
+}
+
+#data-label {
+  color: #0f0;
+}

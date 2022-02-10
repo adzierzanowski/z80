@@ -88,3 +88,11 @@
 .not-zero {
   color: #d00000;
 }
+
+.pix[data-x='7']:not(.on) {
+  background-color: #eee;
+}
+
+.pix[data-y='7']:not(.on) {
+  background-color: #eee;
+}

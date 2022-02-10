@@ -1,0 +1,379 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 8
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Microchip_ATmega:ATmega328-PU U2
+U 1 1 618E9FCD
+P 2300 2950
+F 0 "U2" H 1656 2996 50  0000 R CNN
+F 1 "ATmega328-PU" H 1656 2905 50  0000 R CNN
+F 2 "Package_DIP:DIP-28_W7.62mm" H 2300 2950 50  0001 C CIN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/ATmega328_P%20AVR%20MCU%20with%20picoPower%20Technology%20Data%20Sheet%2040001984A.pdf" H 2300 2950 50  0001 C CNN
+	1    2300 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Crystal Y1
+U 1 1 618EB224
+P 3550 1650
+F 0 "Y1" V 3596 1519 50  0000 R CNN
+F 1 "16 MHz" V 3505 1519 50  0000 R CNN
+F 2 "Crystal:Resonator-2Pin_W7.0mm_H2.5mm" H 3550 1650 50  0001 C CNN
+F 3 "~" H 3550 1650 50  0001 C CNN
+	1    3550 1650
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 618ED201
+P 3250 1350
+F 0 "C1" H 3365 1396 50  0000 L CNN
+F 1 "22 pF" H 3365 1305 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3288 1200 50  0001 C CNN
+F 3 "~" H 3250 1350 50  0001 C CNN
+	1    3250 1350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:C C2
+U 1 1 618EDB04
+P 3850 1350
+F 0 "C2" H 3965 1396 50  0000 L CNN
+F 1 "22 pF" H 3965 1305 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 3888 1200 50  0001 C CNN
+F 3 "~" H 3850 1350 50  0001 C CNN
+	1    3850 1350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3400 1650 3400 1350
+Connection ~ 3400 1650
+Wire Wire Line
+	3700 1650 3700 1350
+Connection ~ 3700 1650
+Wire Wire Line
+	3100 900  4000 900 
+Wire Wire Line
+	4000 900  4000 1350
+$Comp
+L power:GND #PWR08
+U 1 1 618EE3A6
+P 4200 1350
+F 0 "#PWR08" H 4200 1100 50  0001 C CNN
+F 1 "GND" H 4205 1177 50  0000 C CNN
+F 2 "" H 4200 1350 50  0001 C CNN
+F 3 "" H 4200 1350 50  0001 C CNN
+	1    4200 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR06
+U 1 1 618EE950
+P 2300 4450
+F 0 "#PWR06" H 2300 4200 50  0001 C CNN
+F 1 "GND" H 2305 4277 50  0000 C CNN
+F 2 "" H 2300 4450 50  0001 C CNN
+F 3 "" H 2300 4450 50  0001 C CNN
+	1    2300 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR05
+U 1 1 618EF010
+P 2300 1150
+F 0 "#PWR05" H 2300 1000 50  0001 C CNN
+F 1 "+5V" H 2315 1323 50  0000 C CNN
+F 2 "" H 2300 1150 50  0001 C CNN
+F 3 "" H 2300 1150 50  0001 C CNN
+	1    2300 1150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 1150 2300 1250
+Wire Wire Line
+	2400 1450 2400 1250
+Wire Wire Line
+	2400 1250 2300 1250
+Connection ~ 2300 1250
+Wire Wire Line
+	2300 1250 2300 1450
+NoConn ~ 1700 1750
+Wire Wire Line
+	3100 1350 3100 900 
+$Comp
+L Device:R R2
+U 1 1 619B3B98
+P 3850 3250
+F 0 "R2" V 3643 3250 50  0000 C CNN
+F 1 "R" V 3734 3250 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3780 3250 50  0001 C CNN
+F 3 "~" H 3850 3250 50  0001 C CNN
+	1    3850 3250
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+5V #PWR07
+U 1 1 619B5456
+P 4150 3050
+F 0 "#PWR07" H 4150 2900 50  0001 C CNN
+F 1 "+5V" H 4165 3223 50  0000 C CNN
+F 2 "" H 4150 3050 50  0001 C CNN
+F 3 "" H 4150 3050 50  0001 C CNN
+	1    4150 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 3050 4150 3250
+Wire Wire Line
+	4150 3250 4000 3250
+NoConn ~ 2900 3850
+NoConn ~ 2900 3950
+NoConn ~ 2900 4050
+NoConn ~ 2900 4150
+NoConn ~ 2900 2650
+NoConn ~ 2900 2250
+NoConn ~ 2900 2150
+NoConn ~ 2900 2050
+NoConn ~ 2900 1950
+NoConn ~ 2900 1850
+NoConn ~ 2900 1750
+Text HLabel 9350 6000 2    50   BiDi ~ 0
+ctlbus[0..12]
+Entry Wire Line
+	3500 2750 3600 2650
+Entry Wire Line
+	3500 2850 3600 2750
+Entry Wire Line
+	3500 2950 3600 2850
+Entry Wire Line
+	3500 3050 3600 2950
+Entry Wire Line
+	3500 3150 3600 3050
+Text Label 3500 3150 2    50   ~ 0
+clk
+Text Label 3500 3050 2    50   ~ 0
+rst
+Text Label 3500 2950 2    50   ~ 0
+hlt
+Text Label 3500 2850 2    50   ~ 0
+nmi
+Text Label 3500 2750 2    50   ~ 0
+irq
+$Comp
+L Connector:USB_B J2
+U 1 1 61725171
+P 7750 3750
+F 0 "J2" H 7807 4217 50  0000 C CNN
+F 1 "USB_B" H 7807 4126 50  0000 C CNN
+F 2 "Connector_USB:USB_B_Lumberg_2411_02_Horizontal" H 7900 3700 50  0001 C CNN
+F 3 " ~" H 7900 3700 50  0001 C CNN
+	1    7750 3750
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR09
+U 1 1 61725605
+P 6250 2600
+F 0 "#PWR09" H 6250 2450 50  0001 C CNN
+F 1 "+5V" H 6265 2773 50  0000 C CNN
+F 2 "" H 6250 2600 50  0001 C CNN
+F 3 "" H 6250 2600 50  0001 C CNN
+	1    6250 2600
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	6250 2750 6350 2750
+Wire Wire Line
+	6350 2750 6350 3150
+Wire Wire Line
+	6250 2750 6150 2750
+Wire Wire Line
+	6150 2750 6150 3150
+Connection ~ 6250 2750
+Wire Wire Line
+	6250 2600 6250 2750
+Wire Wire Line
+	7450 3750 7050 3750
+Wire Wire Line
+	7050 3850 7450 3850
+Wire Wire Line
+	7450 3550 7300 3550
+Wire Wire Line
+	7300 3550 7300 3250
+$Comp
+L power:+5V #PWR011
+U 1 1 6172A095
+P 7300 3250
+F 0 "#PWR011" H 7300 3100 50  0001 C CNN
+F 1 "+5V" H 7315 3423 50  0000 C CNN
+F 2 "" H 7300 3250 50  0001 C CNN
+F 3 "" H 7300 3250 50  0001 C CNN
+	1    7300 3250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR012
+U 1 1 6172A60C
+P 7800 4450
+F 0 "#PWR012" H 7800 4200 50  0001 C CNN
+F 1 "GND" H 7805 4277 50  0000 C CNN
+F 2 "" H 7800 4450 50  0001 C CNN
+F 3 "" H 7800 4450 50  0001 C CNN
+	1    7800 4450
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 4150 7850 4300
+Wire Wire Line
+	7850 4300 7800 4300
+Wire Wire Line
+	7750 4300 7750 4150
+Wire Wire Line
+	7800 4300 7800 4450
+Connection ~ 7800 4300
+Wire Wire Line
+	7800 4300 7750 4300
+Wire Wire Line
+	7050 4150 7300 4150
+Wire Wire Line
+	7300 4150 7300 3550
+Connection ~ 7300 3550
+$Comp
+L power:GND #PWR010
+U 1 1 6172CD59
+P 6250 5350
+F 0 "#PWR010" H 6250 5100 50  0001 C CNN
+F 1 "GND" H 6255 5177 50  0000 C CNN
+F 2 "" H 6250 5350 50  0001 C CNN
+F 3 "" H 6250 5350 50  0001 C CNN
+	1    6250 5350
+	-1   0    0    -1  
+$EndComp
+Connection ~ 6250 5150
+Wire Wire Line
+	6250 5150 6250 5350
+Connection ~ 6150 5150
+Wire Wire Line
+	6150 5150 6050 5150
+Wire Wire Line
+	6250 5150 6150 5150
+Wire Wire Line
+	6450 5150 6250 5150
+$Comp
+L Interface_USB:FT232RL U3
+U 1 1 61724418
+P 6250 4150
+F 0 "U3" H 6250 5331 50  0000 C CNN
+F 1 "FT232RL" H 6250 5240 50  0000 C CNN
+F 2 "Package_SO:SSOP-28_5.3x10.2mm_P0.65mm" H 7350 3250 50  0001 C CNN
+F 3 "https://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT232R.pdf" H 6250 4150 50  0001 C CNN
+	1    6250 4150
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	2900 3450 5450 3450
+Wire Wire Line
+	2900 2350 3400 2350
+Wire Wire Line
+	3400 1650 3400 2350
+Wire Wire Line
+	2900 2450 3700 2450
+Wire Wire Line
+	3700 1650 3700 2450
+Wire Wire Line
+	2900 3250 3700 3250
+Wire Bus Line
+	3450 6000 9350 6000
+Connection ~ 4000 1350
+Wire Wire Line
+	4000 1350 4200 1350
+Wire Wire Line
+	2900 3550 5450 3550
+Wire Wire Line
+	7050 4850 7050 5150
+Wire Wire Line
+	7050 5150 6450 5150
+Connection ~ 6450 5150
+NoConn ~ 5450 3650
+NoConn ~ 5450 3750
+NoConn ~ 5450 3850
+NoConn ~ 5450 3950
+NoConn ~ 5450 4050
+NoConn ~ 5450 4150
+NoConn ~ 5450 4450
+NoConn ~ 5450 4550
+NoConn ~ 5450 4650
+NoConn ~ 5450 4750
+NoConn ~ 5450 4850
+NoConn ~ 7050 4550
+NoConn ~ 7050 4350
+NoConn ~ 7050 3450
+Text Label 3250 3650 2    50   ~ 0
+rx
+Text Label 3250 3750 2    50   ~ 0
+tx
+Text HLabel 9350 6150 2    50   Input ~ 0
+pc_vcom_rx
+Text HLabel 9350 6300 2    50   Output ~ 0
+pc_vcom_tx
+Wire Wire Line
+	3400 3650 3400 6050
+Wire Wire Line
+	3400 6050 9250 6050
+Wire Wire Line
+	9250 6050 9250 6150
+Wire Wire Line
+	9250 6150 9350 6150
+Wire Wire Line
+	2900 3650 3400 3650
+Wire Wire Line
+	3350 3750 3350 6100
+Wire Wire Line
+	3350 6100 9200 6100
+Wire Wire Line
+	9200 6100 9200 6300
+Wire Wire Line
+	9200 6300 9350 6300
+Wire Wire Line
+	2900 3750 3350 3750
+Text Label 2950 3150 0    50   ~ 0
+ctlbus0
+Text Label 2950 2850 0    50   ~ 0
+ctlbus1
+Text Label 2950 2750 0    50   ~ 0
+ctlbus2
+Text Label 2950 2950 0    50   ~ 0
+ctlbus5
+Wire Bus Line
+	3450 3200 3450 6000
+Wire Bus Line
+	3450 3200 3600 3200
+Wire Wire Line
+	2900 2750 3500 2750
+Wire Wire Line
+	2900 2850 3500 2850
+Wire Wire Line
+	2900 2950 3500 2950
+Wire Wire Line
+	2900 3050 3500 3050
+Wire Wire Line
+	2900 3150 3500 3150
+Text Label 8700 6000 0    50   ~ 0
+ctlbus[0..12]
+Text Label 2950 3050 0    50   ~ 0
+ctlbus12
+Wire Bus Line
+	3600 2600 3600 3200
+$EndSCHEMATC

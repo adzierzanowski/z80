@@ -1,13 +1,5 @@
-ld sp, 0xffff
-nop
-jp start
+ld hl, 0x8000
+jp [hl]
 
-ds 0x66 - $
-nmi:
-  retn
-ds 0x100 - $
 
-start:
-  db 0xff
-  jp start
 

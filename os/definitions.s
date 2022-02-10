@@ -1,0 +1,14 @@
+once
+
+def SCREENPORT 0xaa
+def KBDPORT 0xab
+def EEPROMPORT 0xee
+
+def SYSCALL call SVC_OFFSET
+def IRQ_OFFSET 0x38
+def NMI_OFFSET 0x66
+def SVC_OFFSET 0x30
+def START_OFFSET 0x100
+def STACKEND 0xffff
+
+def KBDBUF 0x8000

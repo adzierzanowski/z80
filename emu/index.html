@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Z80 emulator</title>
+    <link rel="stylesheet" href="main.css">
+    <meta charset="utf-8">
+  </head>
+
+  <body>
+    <div id="content">
+      <div id="control-panel">
+        <div id="bus-panel">
+          <div id="address-panel">
+            <span id="address-label">ADDRESS BUS</span>
+            <div id="address-leddisp-wrapper"></div>
+            <div id="address-segdisp-wrapper"></div>
+          </div>
+          <div id="data-panel">
+            <span id="data-label">DATA BUS</span>
+            <div id="data-leddisp-wrapper"></div>
+            <div id="data-segdisp-wrapper"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="cpu-wrapper"></div>
+    </div>
+
+    <script src="main.mjs" type="module"></script>
+  </body>
+</html>

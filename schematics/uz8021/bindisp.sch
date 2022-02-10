@@ -1,0 +1,1247 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 8
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text HLabel 3400 1250 0    50   Input ~ 0
+abus[0..15]
+Text HLabel 3400 3000 0    50   Input ~ 0
+dbus[0..7]
+Text Label 3550 5150 0    50   ~ 0
+clk
+Text Label 3800 5150 0    50   ~ 0
+m1
+Text Label 4050 5150 0    50   ~ 0
+hlt
+Text Label 4300 5150 0    50   ~ 0
+mreq
+Text Label 4550 5150 0    50   ~ 0
+iorq
+Text Label 4800 5150 0    50   ~ 0
+wait
+Text Label 5050 5150 0    50   ~ 0
+rd
+Text Label 5300 5150 0    50   ~ 0
+wr
+Entry Wire Line
+	3550 1350 3650 1250
+Entry Wire Line
+	3800 1350 3900 1250
+Entry Wire Line
+	5300 1350 5400 1250
+Entry Wire Line
+	4050 1350 4150 1250
+Entry Wire Line
+	7300 1350 7400 1250
+Entry Wire Line
+	7050 1350 7150 1250
+Entry Wire Line
+	4300 1350 4400 1250
+Entry Wire Line
+	4550 1350 4650 1250
+Entry Wire Line
+	6800 1350 6900 1250
+Entry Wire Line
+	6550 1350 6650 1250
+Entry Wire Line
+	4800 1350 4900 1250
+Entry Wire Line
+	6300 1350 6400 1250
+Entry Wire Line
+	5050 1350 5150 1250
+Text Label 3550 1750 1    50   ~ 0
+abus0
+Text Label 3800 1750 1    50   ~ 0
+abus1
+Text Label 4050 1750 1    50   ~ 0
+abus2
+Text Label 4300 1750 1    50   ~ 0
+abus3
+Text Label 4550 1750 1    50   ~ 0
+abus4
+Text Label 4800 1750 1    50   ~ 0
+abus5
+Text Label 5050 1750 1    50   ~ 0
+abus6
+Text Label 5300 1750 1    50   ~ 0
+abus7
+Text Label 5550 1750 1    50   ~ 0
+abus8
+Text Label 5800 1750 1    50   ~ 0
+abus9
+Text Label 6050 1750 1    50   ~ 0
+abus10
+Text Label 6300 1750 1    50   ~ 0
+abus11
+Text Label 6550 1750 1    50   ~ 0
+abus12
+Text Label 7050 1750 1    50   ~ 0
+abus14
+Text Label 6800 1750 1    50   ~ 0
+abus13
+Entry Wire Line
+	6050 1350 6150 1250
+Wire Wire Line
+	3550 1350 3550 1800
+Wire Wire Line
+	3800 1350 3800 1800
+Wire Wire Line
+	4050 1350 4050 1800
+Wire Wire Line
+	4300 1350 4300 1800
+Wire Wire Line
+	4550 1350 4550 1800
+Wire Wire Line
+	4800 1350 4800 1800
+Wire Wire Line
+	5050 1350 5050 1800
+Wire Wire Line
+	5300 1350 5300 1800
+Wire Wire Line
+	5550 1350 5550 1800
+Wire Wire Line
+	5800 1350 5800 1800
+Wire Wire Line
+	6050 1350 6050 1800
+Wire Wire Line
+	6300 1350 6300 1800
+Wire Wire Line
+	6550 1350 6550 1800
+Wire Wire Line
+	6800 1350 6800 1800
+Wire Wire Line
+	7050 1350 7050 1800
+Entry Wire Line
+	5800 1350 5900 1250
+Entry Wire Line
+	5550 1350 5650 1250
+Text Label 5550 5150 0    50   ~ 0
+busrq
+Text Label 5800 5150 0    50   ~ 0
+busack
+$Comp
+L Device:LED D3
+U 1 1 61A9FF5C
+P 3550 2250
+F 0 "D3" H 3543 1995 50  0001 C CNN
+F 1 "LED" H 3543 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3550 2250 50  0001 C CNN
+F 3 "~" H 3550 2250 50  0001 C CNN
+	1    3550 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R7
+U 1 1 61AA1C2A
+P 3550 1950
+F 0 "R7" V 3343 1950 50  0001 C CNN
+F 1 "100" V 3434 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3480 1950 50  0001 C CNN
+F 3 "~" H 3550 1950 50  0001 C CNN
+	1    3550 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D5
+U 1 1 61AAFB3F
+P 3800 2250
+F 0 "D5" H 3793 1995 50  0001 C CNN
+F 1 "LED" H 3793 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3800 2250 50  0001 C CNN
+F 3 "~" H 3800 2250 50  0001 C CNN
+	1    3800 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R9
+U 1 1 61AAFB45
+P 3800 1950
+F 0 "R9" V 3593 1950 50  0001 C CNN
+F 1 "100" V 3684 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3730 1950 50  0001 C CNN
+F 3 "~" H 3800 1950 50  0001 C CNN
+	1    3800 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D7
+U 1 1 61AC0EFB
+P 4050 2250
+F 0 "D7" H 4043 1995 50  0001 C CNN
+F 1 "LED" H 4043 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4050 2250 50  0001 C CNN
+F 3 "~" H 4050 2250 50  0001 C CNN
+	1    4050 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R11
+U 1 1 61AC0F01
+P 4050 1950
+F 0 "R11" V 3843 1950 50  0001 C CNN
+F 1 "100" V 3934 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3980 1950 50  0001 C CNN
+F 3 "~" H 4050 1950 50  0001 C CNN
+	1    4050 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D9
+U 1 1 61AC5277
+P 4300 2250
+F 0 "D9" H 4293 1995 50  0001 C CNN
+F 1 "LED" H 4293 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4300 2250 50  0001 C CNN
+F 3 "~" H 4300 2250 50  0001 C CNN
+	1    4300 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R13
+U 1 1 61AC527D
+P 4300 1950
+F 0 "R13" V 4093 1950 50  0001 C CNN
+F 1 "100" V 4184 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4230 1950 50  0001 C CNN
+F 3 "~" H 4300 1950 50  0001 C CNN
+	1    4300 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D11
+U 1 1 61AC8B79
+P 4550 2250
+F 0 "D11" H 4543 1995 50  0001 C CNN
+F 1 "LED" H 4543 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4550 2250 50  0001 C CNN
+F 3 "~" H 4550 2250 50  0001 C CNN
+	1    4550 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R15
+U 1 1 61AC8B7F
+P 4550 1950
+F 0 "R15" V 4343 1950 50  0001 C CNN
+F 1 "100" V 4434 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4480 1950 50  0001 C CNN
+F 3 "~" H 4550 1950 50  0001 C CNN
+	1    4550 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D13
+U 1 1 61ACC5F1
+P 4800 2250
+F 0 "D13" H 4793 1995 50  0001 C CNN
+F 1 "LED" H 4793 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4800 2250 50  0001 C CNN
+F 3 "~" H 4800 2250 50  0001 C CNN
+	1    4800 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R17
+U 1 1 61ACC5F7
+P 4800 1950
+F 0 "R17" V 4593 1950 50  0001 C CNN
+F 1 "100" V 4684 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4730 1950 50  0001 C CNN
+F 3 "~" H 4800 1950 50  0001 C CNN
+	1    4800 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D15
+U 1 1 61AD00D9
+P 5050 2250
+F 0 "D15" H 5043 1995 50  0001 C CNN
+F 1 "LED" H 5043 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5050 2250 50  0001 C CNN
+F 3 "~" H 5050 2250 50  0001 C CNN
+	1    5050 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R19
+U 1 1 61AD00DF
+P 5050 1950
+F 0 "R19" V 4843 1950 50  0001 C CNN
+F 1 "100" V 4934 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4980 1950 50  0001 C CNN
+F 3 "~" H 5050 1950 50  0001 C CNN
+	1    5050 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D17
+U 1 1 61AE5669
+P 5300 2250
+F 0 "D17" H 5293 1995 50  0001 C CNN
+F 1 "LED" H 5293 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5300 2250 50  0001 C CNN
+F 3 "~" H 5300 2250 50  0001 C CNN
+	1    5300 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R21
+U 1 1 61AE566F
+P 5300 1950
+F 0 "R21" V 5093 1950 50  0001 C CNN
+F 1 "100" V 5184 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5230 1950 50  0001 C CNN
+F 3 "~" H 5300 1950 50  0001 C CNN
+	1    5300 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D19
+U 1 1 61AE863E
+P 5550 2250
+F 0 "D19" H 5543 1995 50  0001 C CNN
+F 1 "LED" H 5543 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5550 2250 50  0001 C CNN
+F 3 "~" H 5550 2250 50  0001 C CNN
+	1    5550 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R23
+U 1 1 61AE8644
+P 5550 1950
+F 0 "R23" V 5343 1950 50  0001 C CNN
+F 1 "100" V 5434 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5480 1950 50  0001 C CNN
+F 3 "~" H 5550 1950 50  0001 C CNN
+	1    5550 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D20
+U 1 1 61AEB153
+P 5800 2250
+F 0 "D20" H 5793 1995 50  0001 C CNN
+F 1 "LED" H 5793 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5800 2250 50  0001 C CNN
+F 3 "~" H 5800 2250 50  0001 C CNN
+	1    5800 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R24
+U 1 1 61AEB159
+P 5800 1950
+F 0 "R24" V 5593 1950 50  0001 C CNN
+F 1 "100" V 5684 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5730 1950 50  0001 C CNN
+F 3 "~" H 5800 1950 50  0001 C CNN
+	1    5800 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D21
+U 1 1 61AED7D4
+P 6050 2250
+F 0 "D21" H 6043 1995 50  0001 C CNN
+F 1 "LED" H 6043 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 6050 2250 50  0001 C CNN
+F 3 "~" H 6050 2250 50  0001 C CNN
+	1    6050 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R25
+U 1 1 61AED7DA
+P 6050 1950
+F 0 "R25" V 5843 1950 50  0001 C CNN
+F 1 "100" V 5934 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5980 1950 50  0001 C CNN
+F 3 "~" H 6050 1950 50  0001 C CNN
+	1    6050 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D22
+U 1 1 61AF0301
+P 6300 2250
+F 0 "D22" H 6293 1995 50  0001 C CNN
+F 1 "LED" H 6293 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 6300 2250 50  0001 C CNN
+F 3 "~" H 6300 2250 50  0001 C CNN
+	1    6300 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R26
+U 1 1 61AF0307
+P 6300 1950
+F 0 "R26" V 6093 1950 50  0001 C CNN
+F 1 "100" V 6184 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 6230 1950 50  0001 C CNN
+F 3 "~" H 6300 1950 50  0001 C CNN
+	1    6300 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D23
+U 1 1 61AF2ED0
+P 6550 2250
+F 0 "D23" H 6543 1995 50  0001 C CNN
+F 1 "LED" H 6543 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 6550 2250 50  0001 C CNN
+F 3 "~" H 6550 2250 50  0001 C CNN
+	1    6550 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R27
+U 1 1 61AF2ED6
+P 6550 1950
+F 0 "R27" V 6343 1950 50  0001 C CNN
+F 1 "100" V 6434 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 6480 1950 50  0001 C CNN
+F 3 "~" H 6550 1950 50  0001 C CNN
+	1    6550 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D24
+U 1 1 61AF5AB5
+P 6800 2250
+F 0 "D24" H 6793 1995 50  0001 C CNN
+F 1 "LED" H 6793 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 6800 2250 50  0001 C CNN
+F 3 "~" H 6800 2250 50  0001 C CNN
+	1    6800 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R28
+U 1 1 61AF5ABB
+P 6800 1950
+F 0 "R28" V 6593 1950 50  0001 C CNN
+F 1 "100" V 6684 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 6730 1950 50  0001 C CNN
+F 3 "~" H 6800 1950 50  0001 C CNN
+	1    6800 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D25
+U 1 1 61B0894C
+P 7050 2250
+F 0 "D25" H 7043 1995 50  0001 C CNN
+F 1 "LED" H 7043 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 7050 2250 50  0001 C CNN
+F 3 "~" H 7050 2250 50  0001 C CNN
+	1    7050 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R29
+U 1 1 61B08952
+P 7050 1950
+F 0 "R29" V 6843 1950 50  0001 C CNN
+F 1 "100" V 6934 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 6980 1950 50  0001 C CNN
+F 3 "~" H 7050 1950 50  0001 C CNN
+	1    7050 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D26
+U 1 1 61B0AE4B
+P 7300 2250
+F 0 "D26" H 7293 1995 50  0001 C CNN
+F 1 "LED" H 7293 2086 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 7300 2250 50  0001 C CNN
+F 3 "~" H 7300 2250 50  0001 C CNN
+	1    7300 2250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R30
+U 1 1 61B0AE51
+P 7300 1950
+F 0 "R30" V 7093 1950 50  0001 C CNN
+F 1 "100" V 7184 1950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 7230 1950 50  0001 C CNN
+F 3 "~" H 7300 1950 50  0001 C CNN
+	1    7300 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7300 1350 7300 1800
+Text Label 7300 1750 1    50   ~ 0
+abus15
+Text Label 3500 1250 0    50   ~ 0
+abus[0..15]
+Entry Wire Line
+	3550 3100 3650 3000
+Entry Wire Line
+	3800 3100 3900 3000
+Entry Wire Line
+	5300 3100 5400 3000
+Entry Wire Line
+	4050 3100 4150 3000
+Entry Wire Line
+	4300 3100 4400 3000
+Entry Wire Line
+	4550 3100 4650 3000
+Entry Wire Line
+	4800 3100 4900 3000
+Entry Wire Line
+	5050 3100 5150 3000
+Text Label 3550 3500 1    50   ~ 0
+dbus0
+Text Label 3800 3500 1    50   ~ 0
+dbus1
+Text Label 4050 3500 1    50   ~ 0
+dbus2
+Text Label 4300 3500 1    50   ~ 0
+dbus3
+Text Label 4550 3500 1    50   ~ 0
+dbus4
+Text Label 4800 3500 1    50   ~ 0
+dbus5
+Text Label 5050 3500 1    50   ~ 0
+dbus6
+Text Label 5300 3500 1    50   ~ 0
+dbus7
+Wire Wire Line
+	3550 3100 3550 3550
+Wire Wire Line
+	3800 3100 3800 3550
+Wire Wire Line
+	4050 3100 4050 3550
+Wire Wire Line
+	4300 3100 4300 3550
+Wire Wire Line
+	4550 3100 4550 3550
+Wire Wire Line
+	4800 3100 4800 3550
+Wire Wire Line
+	5050 3100 5050 3550
+Wire Wire Line
+	5300 3100 5300 3550
+$Comp
+L Device:LED D4
+U 1 1 61B22485
+P 3550 4000
+F 0 "D4" H 3543 3745 50  0001 C CNN
+F 1 "LED" H 3543 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3550 4000 50  0001 C CNN
+F 3 "~" H 3550 4000 50  0001 C CNN
+	1    3550 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R8
+U 1 1 61B2248B
+P 3550 3700
+F 0 "R8" V 3343 3700 50  0001 C CNN
+F 1 "100" V 3434 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3480 3700 50  0001 C CNN
+F 3 "~" H 3550 3700 50  0001 C CNN
+	1    3550 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D6
+U 1 1 61B22491
+P 3800 4000
+F 0 "D6" H 3793 3745 50  0001 C CNN
+F 1 "LED" H 3793 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3800 4000 50  0001 C CNN
+F 3 "~" H 3800 4000 50  0001 C CNN
+	1    3800 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R10
+U 1 1 61B22497
+P 3800 3700
+F 0 "R10" V 3593 3700 50  0001 C CNN
+F 1 "100" V 3684 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3730 3700 50  0001 C CNN
+F 3 "~" H 3800 3700 50  0001 C CNN
+	1    3800 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D8
+U 1 1 61B2249D
+P 4050 4000
+F 0 "D8" H 4043 3745 50  0001 C CNN
+F 1 "LED" H 4043 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4050 4000 50  0001 C CNN
+F 3 "~" H 4050 4000 50  0001 C CNN
+	1    4050 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R12
+U 1 1 61B224A3
+P 4050 3700
+F 0 "R12" V 3843 3700 50  0001 C CNN
+F 1 "100" V 3934 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3980 3700 50  0001 C CNN
+F 3 "~" H 4050 3700 50  0001 C CNN
+	1    4050 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D10
+U 1 1 61B224A9
+P 4300 4000
+F 0 "D10" H 4293 3745 50  0001 C CNN
+F 1 "LED" H 4293 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4300 4000 50  0001 C CNN
+F 3 "~" H 4300 4000 50  0001 C CNN
+	1    4300 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R14
+U 1 1 61B224AF
+P 4300 3700
+F 0 "R14" V 4093 3700 50  0001 C CNN
+F 1 "100" V 4184 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4230 3700 50  0001 C CNN
+F 3 "~" H 4300 3700 50  0001 C CNN
+	1    4300 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D12
+U 1 1 61B224B5
+P 4550 4000
+F 0 "D12" H 4543 3745 50  0001 C CNN
+F 1 "LED" H 4543 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4550 4000 50  0001 C CNN
+F 3 "~" H 4550 4000 50  0001 C CNN
+	1    4550 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R16
+U 1 1 61B224BB
+P 4550 3700
+F 0 "R16" V 4343 3700 50  0001 C CNN
+F 1 "100" V 4434 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4480 3700 50  0001 C CNN
+F 3 "~" H 4550 3700 50  0001 C CNN
+	1    4550 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D14
+U 1 1 61B224C1
+P 4800 4000
+F 0 "D14" H 4793 3745 50  0001 C CNN
+F 1 "LED" H 4793 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4800 4000 50  0001 C CNN
+F 3 "~" H 4800 4000 50  0001 C CNN
+	1    4800 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R18
+U 1 1 61B224C7
+P 4800 3700
+F 0 "R18" V 4593 3700 50  0001 C CNN
+F 1 "100" V 4684 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4730 3700 50  0001 C CNN
+F 3 "~" H 4800 3700 50  0001 C CNN
+	1    4800 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D16
+U 1 1 61B224CD
+P 5050 4000
+F 0 "D16" H 5043 3745 50  0001 C CNN
+F 1 "LED" H 5043 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5050 4000 50  0001 C CNN
+F 3 "~" H 5050 4000 50  0001 C CNN
+	1    5050 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R20
+U 1 1 61B224D3
+P 5050 3700
+F 0 "R20" V 4843 3700 50  0001 C CNN
+F 1 "100" V 4934 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4980 3700 50  0001 C CNN
+F 3 "~" H 5050 3700 50  0001 C CNN
+	1    5050 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D18
+U 1 1 61B224D9
+P 5300 4000
+F 0 "D18" H 5293 3745 50  0001 C CNN
+F 1 "LED" H 5293 3836 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5300 4000 50  0001 C CNN
+F 3 "~" H 5300 4000 50  0001 C CNN
+	1    5300 4000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R22
+U 1 1 61B224DF
+P 5300 3700
+F 0 "R22" V 5093 3700 50  0001 C CNN
+F 1 "100" V 5184 3700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5230 3700 50  0001 C CNN
+F 3 "~" H 5300 3700 50  0001 C CNN
+	1    5300 3700
+	1    0    0    -1  
+$EndComp
+Text Label 3500 3000 0    50   ~ 0
+dbus[0..7]
+Wire Wire Line
+	3550 2400 3550 2550
+Wire Wire Line
+	3550 2550 3800 2550
+$Comp
+L power:GND #PWR0128
+U 1 1 61B43576
+P 7500 2650
+F 0 "#PWR0128" H 7500 2400 50  0001 C CNN
+F 1 "GND" H 7505 2477 50  0000 C CNN
+F 2 "" H 7500 2650 50  0001 C CNN
+F 3 "" H 7500 2650 50  0001 C CNN
+	1    7500 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7500 2650 7500 2550
+Wire Wire Line
+	3800 2550 3800 2400
+Connection ~ 3800 2550
+Wire Wire Line
+	3800 2550 4050 2550
+Wire Wire Line
+	4050 2400 4050 2550
+Connection ~ 4050 2550
+Wire Wire Line
+	4050 2550 4300 2550
+Wire Wire Line
+	4300 2400 4300 2550
+Connection ~ 4300 2550
+Wire Wire Line
+	4300 2550 4550 2550
+Wire Wire Line
+	4550 2400 4550 2550
+Connection ~ 4550 2550
+Wire Wire Line
+	4550 2550 4800 2550
+Wire Wire Line
+	4800 2400 4800 2550
+Connection ~ 4800 2550
+Wire Wire Line
+	4800 2550 5050 2550
+Wire Wire Line
+	5050 2400 5050 2550
+Connection ~ 5050 2550
+Wire Wire Line
+	5050 2550 5300 2550
+Wire Wire Line
+	5300 2400 5300 2550
+Connection ~ 5300 2550
+Wire Wire Line
+	5300 2550 5550 2550
+Wire Wire Line
+	5550 2400 5550 2550
+Connection ~ 5550 2550
+Wire Wire Line
+	5550 2550 5800 2550
+Wire Wire Line
+	5800 2400 5800 2550
+Connection ~ 5800 2550
+Wire Wire Line
+	5800 2550 6050 2550
+Wire Wire Line
+	6050 2400 6050 2550
+Connection ~ 6050 2550
+Wire Wire Line
+	6050 2550 6300 2550
+Wire Wire Line
+	6300 2400 6300 2550
+Connection ~ 6300 2550
+Wire Wire Line
+	6300 2550 6550 2550
+Wire Wire Line
+	6550 2400 6550 2550
+Connection ~ 6550 2550
+Wire Wire Line
+	6550 2550 6800 2550
+Wire Wire Line
+	6800 2400 6800 2550
+Connection ~ 6800 2550
+Wire Wire Line
+	6800 2550 7050 2550
+Wire Wire Line
+	7050 2400 7050 2550
+Connection ~ 7050 2550
+Wire Wire Line
+	7050 2550 7300 2550
+Wire Wire Line
+	7300 2400 7300 2550
+Connection ~ 7300 2550
+Wire Wire Line
+	7300 2550 7500 2550
+$Comp
+L power:GND #PWR0129
+U 1 1 61B68456
+P 5500 4400
+F 0 "#PWR0129" H 5500 4150 50  0001 C CNN
+F 1 "GND" H 5505 4227 50  0000 C CNN
+F 2 "" H 5500 4400 50  0001 C CNN
+F 3 "" H 5500 4400 50  0001 C CNN
+	1    5500 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5500 4400 5500 4300
+Wire Wire Line
+	3550 4150 3550 4300
+Wire Wire Line
+	3550 4300 3800 4300
+Wire Wire Line
+	3800 4150 3800 4300
+Connection ~ 3800 4300
+Wire Wire Line
+	3800 4300 4050 4300
+Wire Wire Line
+	4050 4150 4050 4300
+Connection ~ 4050 4300
+Wire Wire Line
+	4050 4300 4300 4300
+Wire Wire Line
+	4300 4150 4300 4300
+Connection ~ 4300 4300
+Wire Wire Line
+	4300 4300 4550 4300
+Wire Wire Line
+	4550 4150 4550 4300
+Connection ~ 4550 4300
+Wire Wire Line
+	4550 4300 4800 4300
+Wire Wire Line
+	4800 4150 4800 4300
+Connection ~ 4800 4300
+Wire Wire Line
+	4800 4300 5050 4300
+Wire Wire Line
+	5050 4150 5050 4300
+Connection ~ 5050 4300
+Wire Wire Line
+	5050 4300 5300 4300
+Wire Wire Line
+	5300 4150 5300 4300
+Connection ~ 5300 4300
+Wire Wire Line
+	5300 4300 5500 4300
+Text HLabel 3400 4950 0    50   Input ~ 0
+ctlbus[0..12]
+Entry Wire Line
+	3550 5050 3650 4950
+Entry Wire Line
+	3800 5050 3900 4950
+Entry Wire Line
+	5300 5050 5400 4950
+Entry Wire Line
+	4050 5050 4150 4950
+Entry Wire Line
+	4300 5050 4400 4950
+Entry Wire Line
+	4550 5050 4650 4950
+Entry Wire Line
+	4800 5050 4900 4950
+Entry Wire Line
+	5050 5050 5150 4950
+Entry Wire Line
+	5800 5050 5900 4950
+Entry Wire Line
+	5550 5050 5650 4950
+$Comp
+L Device:LED D27
+U 1 1 61BCC0FC
+P 3550 6050
+F 0 "D27" H 3543 5795 50  0001 C CNN
+F 1 "LED" H 3543 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3550 6050 50  0001 C CNN
+F 3 "~" H 3550 6050 50  0001 C CNN
+	1    3550 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R31
+U 1 1 61BCC102
+P 3550 5750
+F 0 "R31" V 3343 5750 50  0001 C CNN
+F 1 "100" V 3434 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3480 5750 50  0001 C CNN
+F 3 "~" H 3550 5750 50  0001 C CNN
+	1    3550 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D28
+U 1 1 61BCC108
+P 3800 6050
+F 0 "D28" H 3793 5795 50  0001 C CNN
+F 1 "LED" H 3793 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 3800 6050 50  0001 C CNN
+F 3 "~" H 3800 6050 50  0001 C CNN
+	1    3800 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R32
+U 1 1 61BCC10E
+P 3800 5750
+F 0 "R32" V 3593 5750 50  0001 C CNN
+F 1 "100" V 3684 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3730 5750 50  0001 C CNN
+F 3 "~" H 3800 5750 50  0001 C CNN
+	1    3800 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D29
+U 1 1 61BCC114
+P 4050 6050
+F 0 "D29" H 4043 5795 50  0001 C CNN
+F 1 "LED" H 4043 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4050 6050 50  0001 C CNN
+F 3 "~" H 4050 6050 50  0001 C CNN
+	1    4050 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R33
+U 1 1 61BCC11A
+P 4050 5750
+F 0 "R33" V 3843 5750 50  0001 C CNN
+F 1 "100" V 3934 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3980 5750 50  0001 C CNN
+F 3 "~" H 4050 5750 50  0001 C CNN
+	1    4050 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D30
+U 1 1 61BCC120
+P 4300 6050
+F 0 "D30" H 4293 5795 50  0001 C CNN
+F 1 "LED" H 4293 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4300 6050 50  0001 C CNN
+F 3 "~" H 4300 6050 50  0001 C CNN
+	1    4300 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R34
+U 1 1 61BCC126
+P 4300 5750
+F 0 "R34" V 4093 5750 50  0001 C CNN
+F 1 "100" V 4184 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4230 5750 50  0001 C CNN
+F 3 "~" H 4300 5750 50  0001 C CNN
+	1    4300 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D31
+U 1 1 61BCC12C
+P 4550 6050
+F 0 "D31" H 4543 5795 50  0001 C CNN
+F 1 "LED" H 4543 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4550 6050 50  0001 C CNN
+F 3 "~" H 4550 6050 50  0001 C CNN
+	1    4550 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R35
+U 1 1 61BCC132
+P 4550 5750
+F 0 "R35" V 4343 5750 50  0001 C CNN
+F 1 "100" V 4434 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4480 5750 50  0001 C CNN
+F 3 "~" H 4550 5750 50  0001 C CNN
+	1    4550 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D32
+U 1 1 61BCC138
+P 4800 6050
+F 0 "D32" H 4793 5795 50  0001 C CNN
+F 1 "LED" H 4793 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 4800 6050 50  0001 C CNN
+F 3 "~" H 4800 6050 50  0001 C CNN
+	1    4800 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R36
+U 1 1 61BCC13E
+P 4800 5750
+F 0 "R36" V 4593 5750 50  0001 C CNN
+F 1 "100" V 4684 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4730 5750 50  0001 C CNN
+F 3 "~" H 4800 5750 50  0001 C CNN
+	1    4800 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D33
+U 1 1 61BCC144
+P 5050 6050
+F 0 "D33" H 5043 5795 50  0001 C CNN
+F 1 "LED" H 5043 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5050 6050 50  0001 C CNN
+F 3 "~" H 5050 6050 50  0001 C CNN
+	1    5050 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R37
+U 1 1 61BCC14A
+P 5050 5750
+F 0 "R37" V 4843 5750 50  0001 C CNN
+F 1 "100" V 4934 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4980 5750 50  0001 C CNN
+F 3 "~" H 5050 5750 50  0001 C CNN
+	1    5050 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D34
+U 1 1 61BCC150
+P 5300 6050
+F 0 "D34" H 5293 5795 50  0001 C CNN
+F 1 "LED" H 5293 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5300 6050 50  0001 C CNN
+F 3 "~" H 5300 6050 50  0001 C CNN
+	1    5300 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R38
+U 1 1 61BCC156
+P 5300 5750
+F 0 "R38" V 5093 5750 50  0001 C CNN
+F 1 "100" V 5184 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5230 5750 50  0001 C CNN
+F 3 "~" H 5300 5750 50  0001 C CNN
+	1    5300 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D35
+U 1 1 61BCC15C
+P 5550 6050
+F 0 "D35" H 5543 5795 50  0001 C CNN
+F 1 "LED" H 5543 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5550 6050 50  0001 C CNN
+F 3 "~" H 5550 6050 50  0001 C CNN
+	1    5550 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R39
+U 1 1 61BCC162
+P 5550 5750
+F 0 "R39" V 5343 5750 50  0001 C CNN
+F 1 "100" V 5434 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5480 5750 50  0001 C CNN
+F 3 "~" H 5550 5750 50  0001 C CNN
+	1    5550 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D36
+U 1 1 61BCC168
+P 5800 6050
+F 0 "D36" H 5793 5795 50  0001 C CNN
+F 1 "LED" H 5793 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 5800 6050 50  0001 C CNN
+F 3 "~" H 5800 6050 50  0001 C CNN
+	1    5800 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R40
+U 1 1 61BCC16E
+P 5800 5750
+F 0 "R40" V 5593 5750 50  0001 C CNN
+F 1 "100" V 5684 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5730 5750 50  0001 C CNN
+F 3 "~" H 5800 5750 50  0001 C CNN
+	1    5800 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 6200 3550 6350
+Wire Wire Line
+	3550 6350 3800 6350
+$Comp
+L power:GND #PWR0125
+U 1 1 61BCC1C1
+P 6250 6450
+F 0 "#PWR0125" H 6250 6200 50  0001 C CNN
+F 1 "GND" H 6255 6277 50  0000 C CNN
+F 2 "" H 6250 6450 50  0001 C CNN
+F 3 "" H 6250 6450 50  0001 C CNN
+	1    6250 6450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6250 6450 6250 6350
+Wire Wire Line
+	3800 6350 3800 6200
+Connection ~ 3800 6350
+Wire Wire Line
+	3800 6350 4050 6350
+Wire Wire Line
+	4050 6200 4050 6350
+Connection ~ 4050 6350
+Wire Wire Line
+	4050 6350 4300 6350
+Wire Wire Line
+	4300 6200 4300 6350
+Connection ~ 4300 6350
+Wire Wire Line
+	4300 6350 4550 6350
+Wire Wire Line
+	4550 6200 4550 6350
+Connection ~ 4550 6350
+Wire Wire Line
+	4550 6350 4800 6350
+Wire Wire Line
+	4800 6200 4800 6350
+Connection ~ 4800 6350
+Wire Wire Line
+	4800 6350 5050 6350
+Wire Wire Line
+	5050 6200 5050 6350
+Connection ~ 5050 6350
+Wire Wire Line
+	5050 6350 5300 6350
+Wire Wire Line
+	5300 6200 5300 6350
+Connection ~ 5300 6350
+Wire Wire Line
+	5300 6350 5550 6350
+Wire Wire Line
+	5550 6200 5550 6350
+Connection ~ 5550 6350
+Wire Wire Line
+	5550 6350 5800 6350
+Wire Wire Line
+	5800 6200 5800 6350
+Text Label 3500 4950 0    50   ~ 0
+ctlbus[0..12]
+Connection ~ 5800 6350
+Text Label 3550 5550 1    50   ~ 0
+ctlbus0
+Text Label 3800 5550 1    50   ~ 0
+ctlbus3
+Text Label 4800 5550 1    50   ~ 0
+ctlbus4
+Text Label 4050 5550 1    50   ~ 0
+ctlbus5
+Text Label 5050 5550 1    50   ~ 0
+ctlbus6
+Text Label 5300 5550 1    50   ~ 0
+ctlbus7
+Text Label 4300 5550 1    50   ~ 0
+ctlbus8
+Text Label 4550 5550 1    50   ~ 0
+ctlbus9
+Text Label 5550 5550 1    50   ~ 0
+ctlbus10
+Text Label 5800 5550 1    50   ~ 0
+ctlbus11
+Wire Wire Line
+	3550 5050 3550 5600
+Wire Wire Line
+	3800 5050 3800 5600
+Wire Wire Line
+	4050 5050 4050 5600
+Wire Wire Line
+	4300 5050 4300 5600
+Wire Wire Line
+	4550 5050 4550 5600
+Wire Wire Line
+	4800 5050 4800 5600
+Wire Wire Line
+	5050 5050 5050 5600
+Wire Wire Line
+	5300 5050 5300 5600
+Wire Wire Line
+	5550 5050 5550 5600
+Wire Wire Line
+	5800 5050 5800 5600
+Text Label 6050 5200 0    50   ~ 0
+rst
+$Comp
+L Device:LED D37
+U 1 1 61CE7D7A
+P 6050 6050
+F 0 "D37" H 6043 5795 50  0001 C CNN
+F 1 "LED" H 6043 5886 50  0001 C CNN
+F 2 "Diode_SMD:D_0603_1608Metric" H 6050 6050 50  0001 C CNN
+F 3 "~" H 6050 6050 50  0001 C CNN
+	1    6050 6050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R42
+U 1 1 61CE7D80
+P 6050 5750
+F 0 "R42" V 5843 5750 50  0001 C CNN
+F 1 "100" V 5934 5750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 5980 5750 50  0001 C CNN
+F 3 "~" H 6050 5750 50  0001 C CNN
+	1    6050 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6050 6200 6050 6350
+Text Label 6050 5550 1    50   ~ 0
+ctlbus12
+Wire Wire Line
+	6050 5050 6050 5600
+Wire Wire Line
+	5800 6350 6050 6350
+Wire Wire Line
+	6050 6350 6250 6350
+Connection ~ 6050 6350
+Entry Wire Line
+	6050 5050 6150 4950
+Wire Bus Line
+	3400 3000 5450 3000
+Wire Bus Line
+	3400 4950 6150 4950
+Wire Bus Line
+	3400 1250 7450 1250
+$EndSCHEMATC

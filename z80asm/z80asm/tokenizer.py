@@ -52,10 +52,12 @@ def resolve_includes(source, include_paths=None, origin=None, included=None):
     fpath = find_file(fname, include_paths)
 
     with open(fpath, 'r') as f:
+      '''
       if fname in included and not config.once:
         warning(
           0, 'tokenizer::resolve_includes', fname,
           'multiple includes of a source:', f'"{fname}"')
+      '''
 
       if fname in included and config.once:
         continue
@@ -79,11 +81,13 @@ def resolve_defines(src):
   for match in re.finditer(DEFINE_RX, src):
     k, v = match.group('key'), match.group('val')
     if k in defines:
+      '''
       warning(0, 'tokenizer::resolve_defines', '<FNAME>',
         'multiple definitions for',
         f'{a.BLUE}{k}{a.E}',
         'the first one will be used:',
         f'{a.GREEN}"{defines[k]}"{a.E}')
+      '''
     else:
       val = v
       for kk, vv in defines.items():
@@ -147,9 +151,6 @@ def tokenize(source, fname=config.filename, defines=None, lblnames=None, include
         token = TDirective(word, fname, line=n)
         if token.value == 'include':
           include = token
-        elif token.value == 'once':
-          # TODO:
-          pass
       elif word == '(':
         token = TExprOpen(fname, line=n)
       elif word == ')':
@@ -195,15 +196,24 @@ def tokenize(source, fname=config.filename, defines=None, lblnames=None, include
               lblnames=lblnames,
               included=included)
 
-            if inc_fname not in included or len([
+            once = len([
               t for t in inctokens
               if isinstance(t, TDirective) and t.value == 'once'
-            ]) == 0:
+            ]) > 0 or config.once
+            print(inc_fname, 'once', once)
+
+            if inc_fname in included:
+              if once:
+                printv(
+                  f'Skipping inclusion of "{inc_fname}" because of `once` directive.', section='tok token')
+              else:
+                warning(token.line, 'tokenizer::tokenize', token.fname,
+                f'Multilple inclusion of `{inc_fname}`.')
+                tokens += inctokens
+                included.append(inc_fname)
+            else:
               tokens += inctokens
               included.append(inc_fname)
-            else:
-              printv(
-                f'Skipping inclusion of "{inc_fname}" because of `once` directive.', section='tok token')
 
           include = None
           token = None

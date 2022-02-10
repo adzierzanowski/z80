@@ -28,7 +28,7 @@ class InbufThread(threading.Thread):
 env = dotenv_values()
 clkport = env.get('CLKPORT')
 memport = env.get('MEMPORT')
-clks = Serial(clkport, 115200)
+clks = Serial(clkport, 9600)
 inbuffer = StringIO('')
 inbuf_th = InbufThread(clks, inbuffer)
 inbuf_th.start()
@@ -68,6 +68,8 @@ def ctl():
     clks.write(b's\n')
   elif cmd == 'speed':
     clks.write(b'c' + arg.encode('ascii') + b'\n')
+  elif cmd == 'forever':
+    clks.write(b'8')
   elif cmd == 'write':
     try:
       c = bytes([int(arg)])
@@ -99,7 +101,7 @@ def assemble():
     with open('test.s', 'w') as f:
       f.write(src.decode('utf-8'))
 
-    retcode = subprocess.call(('python3', '-m', 'z80asm', 'test.s', '-o', 'test'))
+    retcode = subprocess.call(('python3', '-m', 'z80asm', 'test.s', '-I', 'os', '-o', 'test'))
     if retcode:
       return 'assembly failed'
     out = subprocess.check_output(('python3', '-m', 'z80asm', '-d', 'test'))
