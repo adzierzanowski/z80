@@ -9,7 +9,8 @@ written in Python.
 The assembler is more-than-two-pass assembler to make code more readable than
 optimized.
 
-I hope that in the future this will get more professional.
+I've also written a 2-pass Z80 assember in C which is much faster.
+[Check it out here](https://github.com/adzierzanowski/zasm).
 
 ## Z80 Minicomputer
 
